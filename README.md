@@ -1,4 +1,4 @@
 # Evergreen_advent_calendar
 A cute, 3D-animated interactive Advent Calendar built in vanilla HTML, CSS, and JS. Supports server-verified dates, multi-year reuse, multilingual UI, offline PWA install, and renders images, videos, Opus audio, PDFs, DOCX, RTF, and Markdown notes directly from folder contents.
 
-[![pages-build-deployment](https://github.com/R0mb0/Evergreen_advent_calendar/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/R0mb0/Evergreen_advent_calendar/actions/workflows/pages/pages-build-deployment)
+[![pages-build-deployment](https://github.com/R0mb0/Evergreen_advent_calendar/actions/workflows/jekyll_build.yml/badge.svg)](https://github.com/R0mb0/Evergreen_advent_calendar/actions/workflows/jekyll_build.yml)

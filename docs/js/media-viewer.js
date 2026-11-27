@@ -29,7 +29,7 @@ window.AdventMediaViewer = (() => {
     it: {
       loading: 'Caricamento della sorpresa...',
       emptyTitle: 'Ancora nessuna sorpresa qui',
-      emptyDesc: 'Aggiungi uno o più file nella cartella {folder} e registrali in days/manifest.json.',
+      emptyDesc: 'Aggiungi uno o più file nella cartella {folder}: il calendario li trova da solo.',
       errorTitle: 'Impossibile aprire il file',
       errorDesc: 'Controlla che il file {file} sia presente nella cartella {folder}.',
       unsupportedTitle: 'Anteprima non disponibile',
@@ -43,14 +43,14 @@ window.AdventMediaViewer = (() => {
       audioError: 'Formato audio non supportato da questo browser.',
       pdfPage: 'Pagina {current} di {total}',
       pdfLoading: 'Preparazione pagine PDF...',
-      pdfMissingLib: 'Libreria PDF.js non caricata. Verifica la connessione o i file locali in /libs/.',
+      pdfMissingLib: 'Libreria PDF.js non caricata. Verifica la connessione.',
       docxMissingLib: 'Libreria Mammoth.js non caricata.',
       downloadStarted: 'Download avviato: {file}'
     },
     en: {
       loading: 'Loading surprise...',
       emptyTitle: 'No surprise added yet',
-      emptyDesc: 'Add one or more files inside {folder} and list them in days/manifest.json.',
+      emptyDesc: 'Add one or more files inside {folder}: the calendar picks them up automatically.',
       errorTitle: 'Unable to load file',
       errorDesc: 'Please check that {file} exists inside {folder}.',
       unsupportedTitle: 'Preview unavailable',
@@ -71,7 +71,7 @@ window.AdventMediaViewer = (() => {
     fr: {
       loading: 'Chargement de la surprise...',
       emptyTitle: 'Aucune surprise pour le moment',
-      emptyDesc: 'Ajoutez vos fichiers dans {folder} et indiquez-les dans days/manifest.json.',
+      emptyDesc: 'Ajoutez vos fichiers dans {folder} : le calendrier les détecte automatiquement.',
       errorTitle: 'Impossible d’ouvrir le fichier',
       errorDesc: 'Vérifiez que {file} se trouve bien dans {folder}.',
       unsupportedTitle: 'Aperçu indisponible',
@@ -92,7 +92,7 @@ window.AdventMediaViewer = (() => {
     de: {
       loading: 'Überraschung wird geladen...',
       emptyTitle: 'Noch keine Überraschung vorhanden',
-      emptyDesc: 'Lege Dateien in {folder} ab und trage sie in days/manifest.json ein.',
+      emptyDesc: 'Lege Dateien in {folder} ab: Der Kalender findet sie automatisch.',
       errorTitle: 'Datei konnte nicht geladen werden',
       errorDesc: 'Prüfe, ob {file} im Ordner {folder} liegt.',
       unsupportedTitle: 'Keine Vorschau verfügbar',
@@ -113,7 +113,7 @@ window.AdventMediaViewer = (() => {
     es: {
       loading: 'Cargando sorpresa...',
       emptyTitle: 'Aún no hay sorpresa aquí',
-      emptyDesc: 'Añade archivos en {folder} y regístralos en days/manifest.json.',
+      emptyDesc: 'Añade archivos en {folder}: el calendario los detecta automáticamente.',
       errorTitle: 'No se pudo abrir el archivo',
       errorDesc: 'Comprueba que {file} exista dentro de {folder}.',
       unsupportedTitle: 'Vista previa no disponible',
@@ -134,7 +134,7 @@ window.AdventMediaViewer = (() => {
     pt: {
       loading: 'A carregar surpresa...',
       emptyTitle: 'Ainda sem surpresa aqui',
-      emptyDesc: 'Adiciona ficheiros em {folder} e regista-os em days/manifest.json.',
+      emptyDesc: 'Adiciona ficheiros em {folder}: o calendário encontra-os automaticamente.',
       errorTitle: 'Não foi possível abrir o ficheiro',
       errorDesc: 'Verifica se {file} está na pasta {folder}.',
       unsupportedTitle: 'Pré-visualização indisponível',
@@ -155,7 +155,7 @@ window.AdventMediaViewer = (() => {
     nl: {
       loading: 'Verrassing laden...',
       emptyTitle: 'Nog geen verrassing toegevoegd',
-      emptyDesc: 'Plaats bestanden in {folder} en vermeld ze in days/manifest.json.',
+      emptyDesc: 'Plaats bestanden in {folder}: de kalender vindt ze automatisch.',
       errorTitle: 'Bestand kan niet worden geopend',
       errorDesc: 'Controleer of {file} aanwezig is in {folder}.',
       unsupportedTitle: 'Voorbeeld niet beschikbaar',
@@ -176,7 +176,7 @@ window.AdventMediaViewer = (() => {
     pl: {
       loading: 'Ładowanie niespodzianki...',
       emptyTitle: 'Brak niespodzianki na ten dzień',
-      emptyDesc: 'Dodaj pliki do folderu {folder} i wpisz je w days/manifest.json.',
+      emptyDesc: 'Dodaj pliki do folderu {folder}: kalendarz znajdzie je automatycznie.',
       errorTitle: 'Nie udało się otworzyć pliku',
       errorDesc: 'Sprawdź, czy plik {file} znajduje się w {folder}.',
       unsupportedTitle: 'Podgląd niedostępny',
@@ -347,7 +347,8 @@ window.AdventMediaViewer = (() => {
     let entry = daysMap ? (daysMap[padded] ?? daysMap[String(day)] ?? null) : null;
 
     // Tentativo B: manifest dedicato dentro /days/XX/manifest.json
-    if (!entry && window.location.protocol !== 'file:') {
+    // (solo se il manifest globale non è disponibile: se c'è, è la fonte di verità)
+    if (!entry && !daysMap && window.location.protocol !== 'file:') {
       try {
         const res = await fetch(`./days/${padded}/manifest.json`, { cache: 'no-store' });
         if (res.ok) entry = await res.json();
@@ -380,8 +381,9 @@ window.AdventMediaViewer = (() => {
       if (entry.readme) readmeName = entry.readme;
     }
 
-    // Tentativo C: auto-rilevamento di file standard se il giorno non è nel manifest
-    if (!entry) {
+    // Tentativo C: auto-rilevamento di file standard, solo se manca il manifest globale
+    // (es. sviluppo locale senza averlo generato). Con il manifest, un giorno assente è vuoto.
+    if (!entry && !daysMap) {
       const probePromises = AUTO_PROBE_FILES.map(async (name) => {
         const url = buildDayUrl(padded, name);
         return (await urlExists(url)) ? name : null;

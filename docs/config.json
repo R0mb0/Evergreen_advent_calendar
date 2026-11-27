@@ -27,7 +27,7 @@
   "defaultLanguage": "auto",
   "timeApiFallbackUrl": "https://timeapi.io/api/time/current/zone?timeZone=UTC",
   "demoMode": {
-    "enabled": true,
+    "enabled": false,
     "simulatedYear": 2026,
     "simulatedMonth": 12,
     "simulatedDay": 5

@@ -1451,3 +1451,11 @@ body {
   color: #94a3b8;
   padding: 0.4rem 0.6rem;
 }
+/* =========================================================
+   ATTRIBUTO [hidden]
+   Le classi con "display" esplicito (.icon-btn, .pill-btn, .demo-bar...)
+   sovrascriverebbero il valore di default del browser: lo forziamo.
+   ========================================================= */
+[hidden] {
+  display: none !important;
+}

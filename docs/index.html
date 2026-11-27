@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#fff5f7" />
-  <title>Calendario dell'Avvento</title>
+  <meta name="theme-color" content="#ff5d7d" />
+  <title>Evergreen Advent Calendar</title>
 
   <!-- =========================================================
        LIBRERIE ESTERNE (pronte per download offline in /libs/)
@@ -46,10 +46,9 @@
   <!-- Stili dell'applicazione -->
   <link rel="stylesheet" href="css/style.css" />
 
-  <meta name="theme-color" content="#2563eb" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="NomeApp" />
+  <meta name="apple-mobile-web-app-title" content="Advent" />
 
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
@@ -129,12 +128,7 @@
 
         <label class="demo-field">
           <span id="demo-year-label">Anno</span>
-          <select id="demo-year-select">
-            <option value="2025">2025</option>
-            <option value="2026" selected>2026</option>
-            <option value="2027">2027</option>
-            <option value="2028">2028</option>
-          </select>
+          <select id="demo-year-select"></select>
         </label>
 
         <label class="demo-field">
@@ -170,7 +164,7 @@
           <span id="modal-day-badge" class="modal-badge"></span>
           <h2 id="modal-title" class="modal-title"></h2>
         </div>
-        <button id="btn-close-modal" class="icon-btn icon-btn--ghost" type="button" aria-label="Chiudi">
+        <button id="btn-close-modal" class="icon-btn icon-btn--ghost" type="button" aria-label="Chiudi" data-i18n-aria="close">
           <i data-lucide="x"></i>
         </button>
       </div>
@@ -199,44 +193,41 @@
   <!-- Toast notifiche -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+  <!-- Banner installazione Android / Desktop -->
+  <aside id="pwa-install-banner" class="pwa-banner" hidden role="region" aria-label="Install">
+    <div class="pwa-banner__text">
+      <strong id="pwa-install-title">Installa l'app</strong>
+      <span id="pwa-install-desc">Accesso rapido e funzionamento offline.</span>
+    </div>
+    <div class="pwa-banner__actions">
+      <button id="pwa-install-btn" type="button" class="pwa-btn pwa-btn--primary">Installa</button>
+      <button id="pwa-dismiss-btn" type="button" class="pwa-btn pwa-btn--ghost" aria-label="Chiudi" data-i18n-aria="close">✕</button>
+    </div>
+  </aside>
+
+  <!-- Banner guida rapida iOS (Safari) -->
+  <aside id="ios-install-banner" class="pwa-banner pwa-banner--ios" hidden role="region" aria-label="iOS">
+    <div class="pwa-banner__text">
+      <strong id="ios-install-title">Installa su iPhone / iPad</strong>
+      <span id="ios-install-desc">Tocca Condividi → Aggiungi alla schermata Home.</span>
+    </div>
+    <button id="ios-dismiss-btn" type="button" class="pwa-btn pwa-btn--ghost" aria-label="Chiudi" data-i18n-aria="close">✕</button>
+  </aside>
+
+  <!-- Banner nuova versione disponibile -->
+  <aside id="pwa-update-banner" class="pwa-banner pwa-banner--update" hidden role="status">
+    <div class="pwa-banner__text">
+      <strong id="pwa-update-title">Aggiornamento pronto</strong>
+      <span id="pwa-update-desc">È disponibile una nuova versione dell'app.</span>
+    </div>
+    <button id="pwa-update-btn" type="button" class="pwa-btn pwa-btn--primary">Aggiorna</button>
+  </aside>
+
   <!-- Moduli applicazione -->
   <script src="js/i18n.js" defer></script>
   <script src="js/time-storage.js" defer></script>
   <script src="js/media-viewer.js" defer></script>
+  <script src="js/pwa-install.js" defer></script>
   <script src="js/app.js" defer></script>
-  <!-- Banner installazione Android / Desktop -->
-<aside id="pwa-install-banner" class="pwa-banner" hidden role="region" aria-label="Installa applicazione">
-  <div class="pwa-banner__text">
-    <strong>Installa l'app</strong>
-    <span>Accesso rapido e funzionamento 100% offline.</span>
-  </div>
-  <div class="pwa-banner__actions">
-    <button id="pwa-install-btn" type="button" class="pwa-btn pwa-btn--primary">Installa</button>
-    <button id="pwa-dismiss-btn" type="button" class="pwa-btn pwa-btn--ghost" aria-label="Chiudi">✕</button>
-  </div>
-</aside>
-
-<!-- Banner guida rapida iOS (Safari) -->
-<aside id="ios-install-banner" class="pwa-banner pwa-banner--ios" hidden role="region" aria-label="Installa su iOS">
-  <div class="pwa-banner__text">
-    <strong>Installa su iPhone / iPad</strong>
-    <span>
-      Tocca <strong>Condividi</strong> (icona quadrato con freccia in alto) →
-      <strong>Aggiungi alla schermata Home</strong>.
-    </span>
-  </div>
-  <button id="ios-dismiss-btn" type="button" class="pwa-btn pwa-btn--ghost" aria-label="Chiudi">✕</button>
-</aside>
-
-<!-- Banner nuova versione disponibile -->
-<aside id="pwa-update-banner" class="pwa-banner pwa-banner--update" hidden role="status">
-  <div class="pwa-banner__text">
-    <strong>Aggiornamento pronto</strong>
-    <span>È disponibile una nuova versione dell'app.</span>
-  </div>
-  <button id="pwa-update-btn" type="button" class="pwa-btn pwa-btn--primary">Aggiorna</button>
-</aside>
-
-<script src="./pwa-install.js" defer></script>
 </body>
 </html>

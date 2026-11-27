@@ -2,6 +2,7 @@
   const DISMISS_KEY = 'pwa-install-dismissed-v4';
   let deferredPrompt = null;
   let waitingWorker = null;
+  let updateRequested = false;
 
   const installBanner = document.getElementById('pwa-install-banner');
   const installBtn = document.getElementById('pwa-install-btn');
@@ -24,7 +25,14 @@
     return isOldIos || isIpadOs;
   };
 
-  const isDismissed = () => localStorage.getItem(DISMISS_KEY) === '1';
+  const safeGet = (key) => {
+    try { return localStorage.getItem(key); } catch { return null; }
+  };
+  const safeSet = (key, value) => {
+    try { localStorage.setItem(key, value); } catch { /* storage not available */ }
+  };
+
+  const isDismissed = () => safeGet(DISMISS_KEY) === '1';
 
   // 1. Registrazione Service Worker + gestione aggiornamenti
   if ('serviceWorker' in navigator) {
@@ -51,9 +59,11 @@
           });
         });
 
+        // Reload only after the user accepted the update: on the very first install
+        // the new worker takes control (clients.claim) and no reload is needed.
         let refreshing = false;
         navigator.serviceWorker.addEventListener('controllerchange', () => {
-          if (refreshing) return;
+          if (!updateRequested || refreshing) return;
           refreshing = true;
           window.location.reload();
         });
@@ -65,6 +75,7 @@
 
   updateBtn?.addEventListener('click', () => {
     if (waitingWorker) {
+      updateRequested = true;
       waitingWorker.postMessage({ type: 'SKIP_WAITING' });
     }
   });
@@ -78,20 +89,21 @@
     }
   });
 
-  installBtn?.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
+  async function promptInstall() {
+    if (!deferredPrompt) return false;
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     deferredPrompt = null;
     if (installBanner) installBanner.hidden = true;
-    if (outcome === 'accepted') {
-      localStorage.setItem(DISMISS_KEY, '1');
-    }
-  });
+    if (outcome === 'accepted') safeSet(DISMISS_KEY, '1');
+    return outcome === 'accepted';
+  }
+
+  installBtn?.addEventListener('click', promptInstall);
 
   dismissBtn?.addEventListener('click', () => {
     if (installBanner) installBanner.hidden = true;
-    localStorage.setItem(DISMISS_KEY, '1');
+    safeSet(DISMISS_KEY, '1');
   });
 
   window.addEventListener('appinstalled', () => {
@@ -108,6 +120,24 @@
 
   iosDismissBtn?.addEventListener('click', () => {
     if (iosBanner) iosBanner.hidden = true;
-    localStorage.setItem(DISMISS_KEY, '1');
+    safeSet(DISMISS_KEY, '1');
   });
+
+  // API used by the toolbar "Install" button in app.js.
+  // Returns 'prompted' | 'ios' | 'standalone' | 'unavailable'.
+  window.AdventPWA = {
+    isStandalone,
+    async requestInstall() {
+      if (isStandalone()) return 'standalone';
+      if (deferredPrompt) {
+        await promptInstall();
+        return 'prompted';
+      }
+      if (isIosDevice() && iosBanner) {
+        iosBanner.hidden = false;
+        return 'ios';
+      }
+      return 'unavailable';
+    }
+  };
 })();

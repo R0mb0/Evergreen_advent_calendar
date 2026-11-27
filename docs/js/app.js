@@ -16,7 +16,7 @@
     defaultLanguage: 'auto',
     timeApiFallbackUrl: 'https://timeapi.io/api/time/current/zone?timeZone=UTC',
     demoMode: {
-      enabled: true,
+      enabled: false,
       simulatedYear: 2026,
       simulatedMonth: 12,
       simulatedDay: 5
@@ -78,7 +78,15 @@
     btnDownloadMedia: document.getElementById('btn-download-media'),
     btnDownloadLabel: document.getElementById('btn-download-label'),
     toast: document.getElementById('toast'),
-    snowCanvas: document.getElementById('snow-canvas')
+    snowCanvas: document.getElementById('snow-canvas'),
+    pwaInstallTitle: document.getElementById('pwa-install-title'),
+    pwaInstallDesc: document.getElementById('pwa-install-desc'),
+    pwaInstallBtn: document.getElementById('pwa-install-btn'),
+    iosInstallTitle: document.getElementById('ios-install-title'),
+    iosInstallDesc: document.getElementById('ios-install-desc'),
+    pwaUpdateTitle: document.getElementById('pwa-update-title'),
+    pwaUpdateDesc: document.getElementById('pwa-update-desc'),
+    pwaUpdateBtn: document.getElementById('pwa-update-btn')
   };
 
   let toastTimer = null;
@@ -92,6 +100,9 @@
 
     state.dateInfo = await TimeStorage.resolveCurrentDate(state.config);
     state.snowActive = Boolean(state.config.enableSnow);
+
+    // Already running as an installed app: no need for the install button
+    if (window.AdventPWA?.isStandalone()) els.btnInstall.hidden = true;
 
     renderLanguageMenu();
     syncDemoControls();
@@ -142,6 +153,19 @@
     els.demoDayLabel.textContent = I18n.t('demoDay');
     els.demoResetLabel.textContent = I18n.t('demoReset');
 
+    // PWA banners and generic aria-labels
+    els.pwaInstallTitle.textContent = I18n.t('pwaInstallTitle');
+    els.pwaInstallDesc.textContent = I18n.t('pwaInstallDesc');
+    els.pwaInstallBtn.textContent = I18n.t('install');
+    els.iosInstallTitle.textContent = I18n.t('iosTitle');
+    els.iosInstallDesc.textContent = I18n.t('iosDesc');
+    els.pwaUpdateTitle.textContent = I18n.t('pwaUpdateTitle');
+    els.pwaUpdateDesc.textContent = I18n.t('pwaUpdateDesc');
+    els.pwaUpdateBtn.textContent = I18n.t('pwaUpdateBtn');
+    document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
+      el.setAttribute('aria-label', I18n.t(el.dataset.i18nAria));
+    });
+
     updateDateAndProgress();
     highlightActiveLanguage();
 
@@ -188,6 +212,12 @@
     }
 
     els.demoControls.hidden = false;
+
+    // Years from one before to three after the simulated one
+    els.demoYearSelect.innerHTML = '';
+    for (let y = state.dateInfo.year - 1; y <= state.dateInfo.year + 3; y++) {
+      els.demoYearSelect.add(new Option(String(y), String(y)));
+    }
     els.demoYearSelect.value = String(state.dateInfo.year);
     els.demoMonthSelect.value = String(state.dateInfo.month);
     els.demoSlider.max = String(Math.max(state.config.totalDays, 25));
@@ -204,7 +234,7 @@
     for (const lang of I18n.getLanguages()) {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.role = 'menuitem';
+      btn.setAttribute('role', 'menuitem');
       btn.className = 'lang-option';
       btn.dataset.lang = lang.code;
       btn.innerHTML = `
@@ -486,7 +516,11 @@
       els.snowCanvas.style.opacity = state.snowActive ? '1' : '0';
     });
 
-    els.btnInstall.addEventListener('click', () => showToast(I18n.t('toastIter4')));
+    els.btnInstall.addEventListener('click', async () => {
+      const pwa = window.AdventPWA;
+      const result = pwa ? await pwa.requestInstall() : 'unavailable';
+      if (result === 'unavailable') showToast(I18n.t('installUnavailable'));
+    });
 
     els.btnComment.addEventListener('click', () => {
       MediaViewer.toggleCommentView();
