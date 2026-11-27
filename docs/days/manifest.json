@@ -4,156 +4,133 @@
       "files": [
         "pensiero.txt"
       ],
-      "readme": "Readme.md",
-      "v": "3762493e33"
+      "readme": "Readme.md"
     },
     "02": {
       "files": [
         "foto.jpg",
         "vocale_whatsapp.opus"
       ],
-      "readme": "Readme.md",
-      "v": "82f6d9e180"
+      "readme": "Readme.md"
     },
     "03": {
       "files": [
         "ricetta.pdf"
-      ],
-      "v": "c844f49876"
+      ]
     },
     "04": {
       "files": [
         "Lettera di Natale.docx"
-      ],
-      "v": "352f527df5"
+      ]
     },
     "05": {
       "files": [
         "biglietto.rtf"
-      ],
-      "v": "e38a7b9e3f"
+      ]
     },
     "06": {
       "files": [
         "video.mp4"
       ],
-      "readme": "Readme.md",
-      "v": "ad80ac02d0"
+      "readme": "Readme.md"
     },
     "07": {
       "files": [
         "animazione.webm"
-      ],
-      "v": "1658c2d85f"
+      ]
     },
     "08": {
       "files": [
         "1_neve.png",
         "2_bosco.webp",
         "3_sera.jpg"
-      ],
-      "v": "65d581ceb2"
+      ]
     },
     "09": {
       "files": [],
-      "readme": "Readme.md",
-      "v": "91dd0a98d2"
+      "readme": "Readme.md"
     },
     "10": {
       "files": [
         "melodia.m4a"
-      ],
-      "v": "e92c7fe95f"
+      ]
     },
     "11": {
       "files": [
         "poesia.txt"
       ],
-      "readme": "Readme.md",
-      "v": "1010931e6c"
+      "readme": "Readme.md"
     },
     "12": {
       "files": [
         "albero.svg",
         "girandola.gif"
-      ],
-      "v": "7f2d1ed378"
+      ]
     },
     "13": {
       "files": [
         "cartolina.png",
         "vocale.opus"
-      ],
-      "v": "098d171ce2"
+      ]
     },
     "14": {
       "files": [
         "buono.pdf"
-      ],
-      "v": "7cddb9a361"
+      ]
     },
     "15": {
       "files": [
         "foto.jpg",
         "programma.docx"
-      ],
-      "v": "677c91a3ad"
+      ]
     },
     "16": {
       "files": [
         "video.mp4"
-      ],
-      "v": "393237ae63"
+      ]
     },
     "17": {
       "files": [
         "canzone.mp3"
       ],
-      "readme": "Readme.md",
-      "v": "f12d523e4c"
+      "readme": "Readme.md"
     },
     "18": {
       "files": [
         "pensiero.rtf"
       ],
-      "readme": "Readme.md",
-      "v": "abcbb8cf1c"
+      "readme": "Readme.md"
     },
     "19": {
       "files": [
         "inverno.webp",
         "storia.txt"
-      ],
-      "v": "2deb67d59d"
+      ]
     },
     "20": {
       "files": [
         "saluto.webm"
       ],
-      "readme": "Readme.md",
-      "v": "b06f750c39"
+      "readme": "Readme.md"
     },
     "21": {
       "files": [
         "lista_regali.pdf",
         "ringraziamenti.docx"
-      ],
-      "v": "8cf482470d"
+      ]
     },
     "22": {
       "files": [
         "a_mattino.jpg",
         "b_notte.jpg"
       ],
-      "readme": "Readme.md",
-      "v": "1588ddbb21"
+      "readme": "Readme.md"
     },
     "23": {
       "files": [
         "campanelle.wav",
         "vigilia.png"
-      ],
-      "v": "769a0c0545"
+      ]
     },
     "24": {
       "files": [
@@ -162,8 +139,7 @@
         "3_messaggio.opus",
         "4_cartolina.pdf"
       ],
-      "readme": "Readme.md",
-      "v": "4361026474"
+      "readme": "Readme.md"
     }
   }
 }
