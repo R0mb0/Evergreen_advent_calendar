@@ -13,6 +13,7 @@
     allowDownload: false,
     enableSnow: true,
     enableConfetti: true,
+    offlineContent: 'unlocked',
     randomOrder: true,
     randomOrderSeed: 'evergreen',
     defaultLanguage: 'auto',
@@ -100,6 +101,10 @@
     await loadConfig();
     I18n.init(state.config.defaultLanguage);
 
+    // Icons are needed for the first render; the other libraries load in the background
+    await window.AdventLibs.load('lucide');
+    window.AdventLibs.loadMany(['confetti', 'marked', 'purify']);
+
     state.dateInfo = await TimeStorage.resolveCurrentDate(state.config);
     state.snowActive = Boolean(state.config.enableSnow);
 
@@ -112,6 +117,31 @@
     renderGrid();
     bindEvents();
     initSnow();
+    syncOfflineContent();
+  }
+
+  /**
+   * Asks the service worker to keep the daily files available offline.
+   * - offlineContent "unlocked" (default): files of the days already unlocked
+   * - offlineContent "all": files of every day
+   * - offlineContent "none": only files that have been opened are kept
+   */
+  async function syncOfflineContent() {
+    const mode = state.config.offlineContent ?? 'unlocked';
+    if (mode === 'none' || !('serviceWorker' in navigator)) return;
+    if (window.location.protocol === 'file:' || navigator.onLine === false) return;
+
+    try {
+      const { month, day } = state.dateInfo;
+      const { targetMonth, totalDays } = state.config;
+      const maxDay = mode === 'all' ? totalDays : month === targetMonth ? day : 0;
+
+      const { urls, keep } = await MediaViewer.getOfflineUrls(maxDay);
+      const registration = await navigator.serviceWorker.ready;
+      registration.active?.postMessage({ type: 'CACHE_CONTENT', urls, keep });
+    } catch {
+      // Offline caching is best-effort: never block the app
+    }
   }
 
   async function loadConfig() {

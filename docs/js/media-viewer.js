@@ -3,8 +3,7 @@ window.AdventMediaViewer = (() => {
 
   const I18n = window.AdventI18n;
 
-  // PDF.js worker (for fully offline use, replace with './libs/pdf.worker.min.js')
-  const PDF_WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const Libs = window.AdventLibs;
 
   const EXT_MAP = {
     image: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'svg', 'bmp'],
@@ -265,11 +264,14 @@ window.AdventMediaViewer = (() => {
     }
   }
 
-  function buildDayUrl(padded, filename) {
+  // "version" is a short hash of the day's content (from days/manifest.json). Putting it in
+  // the URL lets the service worker keep files offline and still pick up replaced files.
+  function buildDayUrl(padded, filename, version = '') {
     if (/^https?:\/\//i.test(filename) || filename.startsWith('./') || filename.startsWith('/')) {
       return filename;
     }
-    return `./days/${padded}/${encodeURIComponent(filename)}`;
+    const query = version ? `?v=${encodeURIComponent(version)}` : '';
+    return `./days/${padded}/${encodeURIComponent(filename)}${query}`;
   }
 
   function registerObjectUrl(url) {
@@ -359,6 +361,7 @@ window.AdventMediaViewer = (() => {
 
     const rawFiles = [];
     let readmeName = null;
+    const version = entry && typeof entry === 'object' && !Array.isArray(entry) ? entry.v || '' : '';
 
     if (typeof entry === 'string') {
       if (isReadmeName(entry)) readmeName = entry;
@@ -406,7 +409,7 @@ window.AdventMediaViewer = (() => {
 
     const files = rawFiles.map((name) => ({
       name,
-      url: buildDayUrl(padded, name),
+      url: buildDayUrl(padded, name, version),
       type: detectType(name),
       ext: getExt(name)
     }));
@@ -414,8 +417,32 @@ window.AdventMediaViewer = (() => {
     return {
       padded,
       files,
-      readmeUrl: readmeName ? buildDayUrl(padded, readmeName) : null
+      readmeUrl: readmeName ? buildDayUrl(padded, readmeName, version) : null
     };
+  }
+
+  /**
+   * URLs of the daily files that should be kept offline.
+   * urls: files of days <= maxDay. keep: every file in the manifest (used to prune old versions).
+   */
+  async function getOfflineUrls(maxDay) {
+    const rootManifest = await loadRootManifest();
+    const daysMap = rootManifest?.days || null;
+    const urls = [];
+    const keep = [];
+    if (!daysMap) return { urls, keep };
+
+    for (const [padded, entry] of Object.entries(daysMap)) {
+      const names = [...(Array.isArray(entry.files) ? entry.files : [])];
+      if (entry.readme) names.push(entry.readme);
+
+      for (const name of names) {
+        const absolute = new URL(buildDayUrl(padded, name, entry.v || ''), window.location.href).href;
+        keep.push(absolute);
+        if (Number(padded) <= maxDay) urls.push(absolute);
+      }
+    }
+    return { urls, keep };
   }
 
   /* =========================================================
@@ -847,6 +874,7 @@ window.AdventMediaViewer = (() => {
 
   async function decodeOpusToWavUrl(arrayBuffer) {
     try {
+      await Libs.load('opus');
       const lib = window['ogg-opus-decoder'];
       if (!lib || !lib.OggOpusDecoder) return null;
 
@@ -907,12 +935,14 @@ window.AdventMediaViewer = (() => {
 
   /* ---------- 4. PDF ON CANVAS (PDF.js) ---------- */
   async function renderPdf(container, file, renderId) {
+    await Libs.load('pdf');
+    if (renderId !== currentRenderId) return;
     if (!window.pdfjsLib) {
       renderCustomMessage(container, 'file-warning', tr('errorTitle'), tr('pdfMissingLib'));
       return;
     }
 
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER_URL;
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = Libs.pdfWorkerUrl();
     renderLoading(container, tr('pdfLoading'));
 
     const res = await fetch(file.url);
@@ -1018,6 +1048,8 @@ window.AdventMediaViewer = (() => {
 
   /* ---------- 5. WORD (.docx via Mammoth.js) ---------- */
   async function renderDocx(container, file, renderId) {
+    await Libs.loadMany(['mammoth', 'purify']);
+    if (renderId !== currentRenderId) return;
     if (!window.mammoth) {
       renderCustomMessage(container, 'file-warning', tr('errorTitle'), tr('docxMissingLib'));
       return;
@@ -1036,6 +1068,7 @@ window.AdventMediaViewer = (() => {
 
   /* ---------- 6. RTF (.rtf, pure JS parser) ---------- */
   async function renderRtf(container, file, renderId) {
+    await Libs.load('purify');
     const res = await fetch(file.url);
     if (!res.ok) throw new Error('RTF fetch failed');
     const raw = await res.text();
@@ -1196,6 +1229,9 @@ window.AdventMediaViewer = (() => {
     renderLoading(container);
 
     try {
+      await Libs.loadMany(['marked', 'purify']);
+      if (renderId !== currentRenderId) return;
+
       const res = await fetch(url, { cache: 'no-store' });
       if (!res.ok) throw new Error('Markdown fetch failed');
       const mdText = await res.text();
@@ -1290,7 +1326,11 @@ window.AdventMediaViewer = (() => {
         USE_PROFILES: { html: true }
       });
     }
-    return html;
+
+    // Fail-safe: if the sanitizer could not be loaded, never inject raw HTML.
+    // Show the plain text content only.
+    const text = new DOMParser().parseFromString(html, 'text/html').body.textContent || '';
+    return `<p>${escapeHtml(text).replaceAll('\n', '<br />')}</p>`;
   }
 
   function refreshIcons() {
@@ -1304,6 +1344,7 @@ window.AdventMediaViewer = (() => {
     toggleCommentView,
     refreshLanguage,
     downloadCurrentFile,
+    getOfflineUrls,
     cleanup: cleanupMedia
   };
 })();
