@@ -5,10 +5,9 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+# Permessi minimi a livello di workflow: ogni job aggiunge solo ciò che gli serve
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: "pages"
@@ -20,60 +19,30 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Serve per salvare il manifest aggiornato nel repository
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Genera automaticamente days/manifest.json
+      - name: Genera days/manifest.json
+        run: python3 .github/scripts/generate_manifest.py
+
+      # Il file viene aggiornato anche nel repository, così resta allineato
+      # con il sito pubblicato (e con il tuo clone locale dopo un git pull).
+      # I push fatti con GITHUB_TOKEN non fanno ripartire il workflow.
+      - name: Salva il manifest nel repository (solo se cambiato)
         run: |
-          python3 - <<'EOF'
-          import json
-          import os
-          import re
-          from pathlib import Path
-
-          days_dir = Path(os.environ["SITE_DIR"]) / "days"
-          days_dir.mkdir(parents=True, exist_ok=True)
-
-          IGNORED_FILES = {".ds_store", ".gitkeep", "thumbs.db", "desktop.ini"}
-          manifest = {"days": {}}
-
-          day_folders = [
-              d for d in days_dir.iterdir()
-              if d.is_dir() and re.fullmatch(r"\d{2}", d.name)
-          ]
-
-          for folder in sorted(day_folders, key=lambda d: int(d.name)):
-              files = []
-              readme = None
-
-              for item in sorted(folder.iterdir(), key=lambda p: p.name.lower()):
-                  if not item.is_file():
-                      continue
-                  lower_name = item.name.lower()
-                  if item.name.startswith(".") or lower_name in IGNORED_FILES:
-                      continue
-                  if lower_name == "readme.md":
-                      readme = item.name
-                  else:
-                      files.append(item.name)
-
-              if not files and not readme:
-                  continue
-
-              entry = {"files": files}
-              if readme:
-                  entry["readme"] = readme
-
-              manifest["days"][folder.name] = entry
-
-          out_file = days_dir / "manifest.json"
-          out_file.write_text(
-              json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
-              encoding="utf-8",
-          )
-          print(f"Generato {out_file} con {len(manifest['days'])} giorni.")
-          EOF
+          if [ -z "$(git status --porcelain -- "$SITE_DIR/days/manifest.json")" ]; then
+            echo "Manifest già aggiornato, nessun commit necessario."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add "$SITE_DIR/days/manifest.json"
+            git commit -m "chore: aggiorna days/manifest.json [skip ci]"
+            git push || echo "::warning::Push del manifest non riuscito (branch protetto?). Il sito pubblicato è comunque aggiornato."
+          fi
 
       - name: Configura GitHub Pages
         uses: actions/configure-pages@v5
@@ -95,6 +64,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      pages: write
+      id-token: write
     steps:
       - name: Deploy su GitHub Pages
         id: deployment
