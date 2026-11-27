@@ -17,6 +17,7 @@ A cute, modern, 100% client-side 3D Advent Calendar Progressive Web App (PWA) bu
 
 ---
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/708e80ed3c904256b6fc22828f44b4f7)](https://app.codacy.com/gh/R0mb0/Evergreen_advent_calendar/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Build Jekyll & Deploy Evergreen Advent Calendar](https://github.com/R0mb0/Evergreen_advent_calendar/actions/workflows/jekyll_build.yml/badge.svg)](https://github.com/R0mb0/Evergreen_advent_calendar/actions/workflows/jekyll_build.yml)
 [![pages-build-deployment](https://github.com/R0mb0/Evergreen_advent_calendar/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/R0mb0/Evergreen_advent_calendar/actions/workflows/pages/pages-build-deployment)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/R0mb0/Evergreen_advent_calendar)
