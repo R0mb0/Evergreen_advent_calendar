@@ -24,6 +24,8 @@
   "allowDownload": false,
   "enableSnow": true,
   "enableConfetti": true,
+  "randomOrder": true,
+  "randomOrderSeed": "evergreen",
   "defaultLanguage": "auto",
   "timeApiFallbackUrl": "https://timeapi.io/api/time/current/zone?timeZone=UTC",
   "demoMode": {

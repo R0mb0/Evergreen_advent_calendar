@@ -13,6 +13,8 @@
     allowDownload: false,
     enableSnow: true,
     enableConfetti: true,
+    randomOrder: true,
+    randomOrderSeed: 'evergreen',
     defaultLanguage: 'auto',
     timeApiFallbackUrl: 'https://timeapi.io/api/time/current/zone?timeZone=UTC',
     demoMode: {
@@ -276,6 +278,49 @@
   /* =========================================================
      UNLOCK LOGIC & 3D GRID RENDERING
      ========================================================= */
+  // Small seeded random generator (mulberry32): same seed -> same sequence
+  function createSeededRandom(seedText) {
+    let h = 1779033703 ^ seedText.length;
+    for (let i = 0; i < seedText.length; i++) {
+      h = Math.imul(h ^ seedText.charCodeAt(i), 3432918353);
+      h = (h << 13) | (h >>> 19);
+    }
+    let a = h >>> 0;
+    return () => {
+      a = (a + 0x6d2b79f5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /**
+   * Order in which the gifts appear in the grid.
+   * - randomOrder: false -> 1, 2, 3 ... (classic ordered calendar)
+   * - randomOrder: true  -> a fixed "random" layout (the same for every visitor and
+   *   every visit), so the days have to be found, like in a store-bought calendar.
+   *   Change randomOrderSeed in config.json to get a different layout.
+   */
+  function getDayLayout() {
+    const { totalDays, randomOrder, randomOrderSeed } = state.config;
+    const days = Array.from({ length: totalDays }, (_, i) => i + 1);
+
+    if (!randomOrder) {
+      return days.map((day) => ({ day, tilt: 0 }));
+    }
+
+    const rnd = createSeededRandom(`${randomOrderSeed ?? 'evergreen'}:${totalDays}`);
+
+    // Fisher-Yates shuffle
+    for (let i = days.length - 1; i > 0; i--) {
+      const j = Math.floor(rnd() * (i + 1));
+      [days[i], days[j]] = [days[j], days[i]];
+    }
+
+    // Each gift is slightly tilted for a more natural look
+    return days.map((day) => ({ day, tilt: Number((rnd() * 5 - 2.5).toFixed(2)) }));
+  }
+
   function isDayUnlockable(day) {
     return state.dateInfo.month === state.config.targetMonth && day <= state.dateInfo.day;
   }
@@ -284,9 +329,9 @@
     els.grid.innerHTML = '';
     const fragment = document.createDocumentFragment();
     const { year, day: currentDay } = state.dateInfo;
-    const { targetMonth, totalDays } = state.config;
+    const { targetMonth } = state.config;
 
-    for (let day = 1; day <= totalDays; day++) {
+    for (const { day, tilt } of getDayLayout()) {
       const unlockable = isDayUnlockable(day);
       const record = TimeStorage.getDayRecord(day);
       const isOpened = unlockable && TimeStorage.isOpenedForYear(day, year);
@@ -327,7 +372,7 @@
         : '';
 
       wrapper.innerHTML = `
-        <div class="door-frame">
+        <div class="door-frame" style="--tilt: ${tilt}deg">
           <button class="door-inside" type="button" aria-label="${I18n.t('doorInsideDay', { day })}">
             <span class="inside-icon"><i data-lucide="heart"></i></span>
             <span class="inside-day">${I18n.t('doorInsideDay', { day })}</span>
@@ -336,15 +381,21 @@
           </button>
 
           <button class="door-panel" type="button" aria-label="${I18n.t('doorInsideDay', { day })}">
-            <div class="door-front">
-              <div class="door-top-row">
-                <span class="door-chip">${chipLabel}</span>
-                <span class="door-status-icon"><i data-lucide="${statusIcon}"></i></span>
-              </div>
-              <span class="door-number">${day}</span>
-              <span class="door-caption">${caption}</span>
-            </div>
-            <div class="door-back" aria-hidden="true"></div>
+            <span class="door-front">
+              <span class="gift-lid">
+                <span class="gift-ribbon"></span>
+                <span class="gift-bow" aria-hidden="true"><i></i><i></i><b></b></span>
+              </span>
+              <span class="gift-body">
+                <span class="gift-ribbon"></span>
+                <span class="door-top-row">
+                  <span class="door-chip">${chipLabel}</span>
+                  <span class="door-status-icon"><i data-lucide="${statusIcon}"></i></span>
+                </span>
+                <span class="door-number">${day}</span>
+                <span class="door-caption">${caption}</span>
+              </span>
+            </span>
           </button>
         </div>
       `;

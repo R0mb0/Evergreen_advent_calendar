@@ -1,5 +1,5 @@
 // Bump this value whenever the app shell changes, so old caches are dropped.
-const CACHE_VERSION = 'advent-v5.0.0';
+const CACHE_VERSION = 'advent-v5.1.0';
 const STATIC_CACHE = `static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`;
 const CDN_CACHE = `cdn-${CACHE_VERSION}`;

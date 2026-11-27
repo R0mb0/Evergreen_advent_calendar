@@ -322,7 +322,7 @@ body {
 }
 
 /* =========================================================
-   RESPONSIVE GRID OF 3D DOORS
+   RESPONSIVE GRID OF GIFTS
    ========================================================= */
 .calendar-grid {
   display: grid;
@@ -330,9 +330,8 @@ body {
   gap: 1rem;
 }
 
-/* Single day container with 3D perspective */
+/* Single gift container */
 .door-wrapper {
-  perspective: 1100px;
   aspect-ratio: 1 / 1.08;
   opacity: 0;
   transform: translateY(18px) scale(0.96);
@@ -346,40 +345,433 @@ body {
   }
 }
 
+/* The gift scene. --tilt is set from JS (random order mode) for an organic look */
 .door-frame {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-xl);
-  background: linear-gradient(145deg, #fffdf9, #fff2e0);
-  box-shadow:
-    inset 0 6px 16px rgba(126, 78, 56, 0.16),
-    0 12px 24px -10px rgba(96, 52, 74, 0.15);
-  border: 2px solid rgba(255, 255, 255, 0.85);
+  rotate: var(--tilt, 0deg);
 }
 
-/* Inside of the door (visible when the 3D door opens) */
+/* Soft shadow on the ground */
+.door-frame::after {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: -1%;
+  height: 7%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(96, 52, 74, 0.28), transparent 70%);
+  pointer-events: none;
+}
+
+/* ---------- Gift palettes (body, lid, ribbon, label ink) ---------- */
+.door-wrapper {
+  --gift-a: #ff7d97;
+  --gift-b: #ff4f73;
+  --gift-depth: #d43758;
+  --lid-a: #ff93a9;
+  --lid-b: #ff6584;
+  --ribbon-a: #ffe2a0;
+  --ribbon-b: #ffc65c;
+  --ribbon-dark: #f0a52c;
+  --ink: #d93f60;
+  --on-gift: #ffffff;
+}
+
+.door-wrapper[data-theme="mint"] {
+  --gift-a: #6fe6dc;
+  --gift-b: #3bc4ba;
+  --gift-depth: #279e95;
+  --lid-a: #8aeee5;
+  --lid-b: #52d3c9;
+  --ribbon-a: #fff6e6;
+  --ribbon-b: #ffe9c4;
+  --ribbon-dark: #f0c987;
+  --ink: #23847d;
+}
+
+.door-wrapper[data-theme="gold"] {
+  --gift-a: #ffcf7d;
+  --gift-b: #ffa938;
+  --gift-depth: #d98216;
+  --lid-a: #ffdc9a;
+  --lid-b: #ffb957;
+  --ribbon-a: #ff8aa0;
+  --ribbon-b: #ff5d7d;
+  --ribbon-dark: #d93f60;
+  --ink: #bf6f0c;
+}
+
+.door-wrapper[data-theme="sky"] {
+  --gift-a: #a4c3ff;
+  --gift-b: #6b96f5;
+  --gift-depth: #4972d1;
+  --lid-a: #b9d1ff;
+  --lid-b: #80a6f8;
+  --ribbon-a: #ffffff;
+  --ribbon-b: #eaf0ff;
+  --ribbon-dark: #c9d6f5;
+  --ink: #3d61bd;
+}
+
+/* Locked day (future): a pale, "sleeping" gift */
+.door-wrapper.is-locked {
+  --gift-a: #f1eaee;
+  --gift-b: #e3d9df;
+  --gift-depth: #cdbfc8;
+  --lid-a: #f8f3f6;
+  --lid-b: #ece4e9;
+  --ribbon-a: #fbf8fa;
+  --ribbon-b: #ece5e9;
+  --ribbon-dark: #cfc3cb;
+  --ink: #8f7b87;
+  --on-gift: #8f7b87;
+}
+
+/* ---------- Gift parts ---------- */
+.door-panel {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  z-index: 2;
+  display: block;
+  border-radius: 22px;
+}
+
+.door-panel:focus-visible,
+.door-inside:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 4px;
+}
+
+.door-wrapper.is-locked .door-panel {
+  cursor: not-allowed;
+}
+
+/* An opened gift is no longer interactive: no focus ring around the whole cell */
+.door-wrapper.is-open .door-panel:focus-visible {
+  outline: none;
+}
+
+.door-front {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: var(--on-gift);
+}
+
+/* Box body */
+.gift-body {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 29%;
+  bottom: 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16% 0.5rem 0.55rem;
+  border-radius: 14px 14px 20px 20px;
+  background: linear-gradient(150deg, var(--gift-a), var(--gift-b));
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.45),
+    inset 0 -10px 16px rgba(0, 0, 0, 0.06),
+    0 6px 0 var(--gift-depth),
+    0 12px 20px -6px rgba(96, 52, 74, 0.25);
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+
+/* Vertical ribbon (body and lid) */
+.gift-ribbon {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 17%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--ribbon-a), var(--ribbon-b));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  transition: opacity 0.4s ease;
+}
+
+/* Lid with the bow */
+.gift-lid {
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  top: 13%;
+  height: 18%;
+  z-index: 2;
+  border-radius: 12px;
+  background: linear-gradient(150deg, var(--lid-a), var(--lid-b));
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.5),
+    0 5px 0 var(--gift-depth),
+    0 8px 12px -4px rgba(96, 52, 74, 0.25);
+  transform-origin: 20% 100%;
+  transition:
+    transform 0.75s cubic-bezier(0.34, 1.45, 0.64, 1),
+    opacity 0.45s ease 0.25s;
+}
+
+.gift-lid .gift-ribbon {
+  border-radius: 0;
+}
+
+/* Bow: two loops and a knot */
+.gift-bow {
+  position: absolute;
+  left: 50%;
+  bottom: 88%;
+  width: 40%;
+  height: 78%;
+  transform: translateX(-50%);
+  transform-origin: 50% 100%;
+}
+
+.gift-bow i {
+  position: absolute;
+  bottom: 0;
+  width: 52%;
+  height: 100%;
+  border: 3px solid var(--ribbon-dark);
+  border-radius: 55% 55% 40% 40%;
+  background: linear-gradient(160deg, var(--ribbon-a), var(--ribbon-b));
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.25);
+}
+
+.gift-bow i:nth-child(1) {
+  left: 0;
+  rotate: -22deg;
+  transform-origin: 100% 100%;
+}
+
+.gift-bow i:nth-child(2) {
+  right: 0;
+  rotate: 22deg;
+  transform-origin: 0 100%;
+}
+
+.gift-bow b {
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  width: 26%;
+  height: 56%;
+  transform: translateX(-50%);
+  border-radius: 6px;
+  background: linear-gradient(180deg, var(--ribbon-b), var(--ribbon-dark));
+  border: 2px solid var(--ribbon-dark);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.14);
+}
+
+/* Hover: the lid wiggles as if it wanted to be opened */
+.door-wrapper.is-available:not(.is-open) .door-panel:hover .gift-lid {
+  transform: translateY(-9%) rotate(-3deg);
+}
+
+.door-wrapper.is-available:not(.is-open) .door-panel:hover .gift-bow {
+  animation: bowWiggle 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes bowWiggle {
+  from { transform: translateX(-50%) rotate(-4deg); }
+  to { transform: translateX(-50%) rotate(4deg); }
+}
+
+/* Today: gentle bounce and glow */
+.door-wrapper.is-today:not(.is-open) .door-panel {
+  animation: giftBounce 2.4s ease-in-out infinite;
+}
+
+.door-wrapper.is-today:not(.is-open) .gift-body {
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.55),
+    0 6px 0 var(--gift-depth),
+    0 0 0 5px rgba(255, 183, 77, 0.38),
+    0 16px 26px -6px rgba(255, 93, 125, 0.38);
+}
+
+@keyframes giftBounce {
+  0%, 70%, 100% { transform: translateY(0); }
+  80% { transform: translateY(-6px); }
+  90% { transform: translateY(0); }
+  95% { transform: translateY(-3px); }
+}
+
+/* Open state: the lid flies away, the label changes */
+.door-wrapper.is-open .door-panel {
+  pointer-events: none; /* Allows a clean click on the inside */
+}
+
+.door-wrapper.is-open .gift-lid {
+  transform: translate(24%, -120%) rotate(24deg);
+  opacity: 0;
+}
+
+.door-wrapper.is-open .gift-body > :not(.gift-ribbon) {
+  opacity: 0;
+}
+
+.door-wrapper.is-open .gift-body .gift-ribbon {
+  opacity: 0.22;
+}
+
+/* ---------- Label on the box ---------- */
+.door-top-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.door-chip {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.18rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--gift-depth);
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.door-wrapper.is-locked .door-chip {
+  background: #d9ced5;
+  color: #6f5d69;
+}
+
+.door-status-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--gift-depth);
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.door-status-icon svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* The day number sits on a round tag over the ribbon */
+.door-number {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(40px, 34%, 62px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 3.4vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.1), 0 6px 12px -4px rgba(96, 52, 74, 0.3);
+  transition: opacity 0.3s ease;
+}
+
+.door-caption {
+  position: relative;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.12rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--gift-depth);
+  color: #ffffff;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+.door-wrapper.is-locked .door-caption {
+  background: #d9ced5;
+  color: #6f5d69;
+}
+
+.door-wrapper.is-locked .door-status-icon {
+  background: #d9ced5;
+  color: #6f5d69;
+}
+
+/* ---------- Content revealed from the open gift ---------- */
 .door-inside {
   position: absolute;
   inset: 0;
-  border-radius: calc(var(--radius-xl) - 2px);
+  z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  padding: 0.75rem;
+  gap: 0.25rem;
+  padding: 30% 0.5rem 0.6rem;
   text-align: center;
   cursor: pointer;
-  background:
-    radial-gradient(circle at 50% 35%, rgba(255, 214, 102, 0.38), transparent 65%),
-    linear-gradient(180deg, #fffaf2 0%, #ffeef2 100%);
+  background: transparent;
   border: none;
   width: 100%;
   height: 100%;
   font-family: var(--font-body);
-  color: var(--text-main);
-  transition: transform 0.2s ease;
+  color: #ffffff;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.35s ease 0.3s, visibility 0s linear 0.3s;
+}
+
+.door-wrapper.is-open .door-inside {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Sparkles rising out of the box */
+.door-inside::before,
+.door-inside::after {
+  content: "✦";
+  position: absolute;
+  top: 24%;
+  font-size: 1.1rem;
+  color: var(--gold);
+  text-shadow: 0 0 8px rgba(255, 214, 102, 0.9);
+  opacity: 0;
+}
+
+.door-inside::before {
+  left: 24%;
+}
+
+.door-inside::after {
+  content: "✧";
+  right: 22%;
+  font-size: 1.4rem;
+}
+
+.door-wrapper.is-open .door-inside::before {
+  animation: sparkleUp 2.6s ease-out 0.4s infinite;
+}
+
+.door-wrapper.is-open .door-inside::after {
+  animation: sparkleUp 2.6s ease-out 1.2s infinite;
+}
+
+@keyframes sparkleUp {
+  0% { opacity: 0; transform: translateY(14px) scale(0.6); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-26px) scale(1.15); }
 }
 
 .door-inside:hover .inside-icon {
@@ -387,208 +779,52 @@ body {
 }
 
 .inside-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 18px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, var(--gold), #ffcf75);
-  color: #fff;
-  box-shadow: 0 5px 0 var(--gold-dark), 0 8px 16px rgba(255, 183, 77, 0.35);
+  background: #ffffff;
+  color: var(--berry);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.1), 0 6px 12px -4px rgba(96, 52, 74, 0.3);
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .inside-icon svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 .inside-day {
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  color: var(--berry-dark);
+  color: #ffffff;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.14);
 }
 
 .inside-cta {
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-weight: 800;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.95);
 }
 
-/* Rotating 3D door */
-.door-panel {
-  position: absolute;
-  inset: -2px;
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  transform-style: preserve-3d;
-  transform-origin: left center;
-  transition: transform 0.75s cubic-bezier(0.34, 1.38, 0.64, 1);
-  z-index: 2;
-}
-
-/* Tactile 3D hover effect on openable doors */
-.door-wrapper.is-available:not(.is-open):hover .door-panel {
-  transform: rotateY(-14deg) translateY(-3px);
-}
-
-/* Open state: door swung wide open in 3D */
-.door-wrapper.is-open .door-panel {
-  transform: rotateY(-122deg);
-  pointer-events: none; /* Allows a clean click on the inside */
-}
-
-/* Front and back face of the door */
-.door-front,
-.door-back {
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-xl);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-.door-front {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.85rem;
+.door-inside .inside-year-tag {
+  background: rgba(255, 255, 255, 0.28);
   color: #ffffff;
-  border: 2px solid rgba(255, 255, 255, 0.45);
-  box-shadow:
-    inset 0 2px 3px rgba(255, 255, 255, 0.45),
-    0 8px 0 var(--door-depth, rgba(0, 0, 0, 0.14)),
-    0 14px 22px -6px rgba(96, 52, 74, 0.22);
-  overflow: hidden;
 }
 
-/* Soft decorative light on the doors */
-.door-front::before {
-  content: "";
-  position: absolute;
-  top: -30%;
-  left: -20%;
-  width: 90%;
-  height: 70%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.32), transparent 68%);
-  pointer-events: none;
+.door-wrapper.is-locked .door-inside {
+  color: var(--on-gift);
 }
 
-/* Back of the door when open */
-.door-back {
-  transform: rotateY(180deg);
-  background: linear-gradient(135deg, #ffe3ea, #fff4f7);
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  box-shadow: inset -6px 0 14px rgba(96, 52, 74, 0.08);
-}
-
-/* Varied palettes to make the grid cheerful and cute */
-.door-wrapper[data-theme="berry"] .door-front {
-  background: linear-gradient(145deg, #ff708d, #ff4f73);
-  --door-depth: #d43758;
-}
-
-.door-wrapper[data-theme="mint"] .door-front {
-  background: linear-gradient(145deg, #62dfd6, #3bc4ba);
-  --door-depth: #279e95;
-}
-
-.door-wrapper[data-theme="gold"] .door-front {
-  background: linear-gradient(145deg, #ffc86b, #ffa938);
-  --door-depth: #d98216;
-}
-
-.door-wrapper[data-theme="sky"] .door-front {
-  background: linear-gradient(145deg, #94b8ff, #6b96f5);
-  --door-depth: #4972d1;
-}
-
-/* Locked day (future) */
-.door-wrapper.is-locked .door-front {
-  background: linear-gradient(145deg, #f3edf0, #e6dce2);
-  color: #8f7b87;
-  --door-depth: #cfc1ca;
-  border-color: rgba(255, 255, 255, 0.85);
-}
-
-.door-wrapper.is-locked .door-panel {
-  cursor: not-allowed;
-}
-
-/* Special badge for TODAY (soft pulse) */
-.door-wrapper.is-today:not(.is-open) .door-front {
-  box-shadow:
-    inset 0 2px 3px rgba(255, 255, 255, 0.55),
-    0 8px 0 var(--door-depth),
-    0 0 0 5px rgba(255, 183, 77, 0.35),
-    0 16px 26px -6px rgba(255, 93, 125, 0.38);
-}
-
-.door-top-row {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.door-chip {
-  font-size: 0.7rem;
-  font-weight: 800;
-  padding: 0.2rem 0.55rem;
-  border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.26);
-  backdrop-filter: blur(4px);
-}
-
-.door-wrapper.is-locked .door-chip {
-  background: rgba(143, 123, 135, 0.14);
-}
-
-.door-status-icon {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: rgba(255, 255, 255, 0.24);
-}
-
-.door-status-icon svg {
-  width: 14px;
-  height: 14px;
-}
-
-.door-number {
-  font-family: var(--font-display);
-  font-size: clamp(2.1rem, 5.5vw, 3rem);
-  font-weight: 700;
-  line-height: 1;
-  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.12);
-}
-
-.door-wrapper.is-locked .door-number {
-  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.7);
-}
-
-.door-caption {
-  font-size: 0.78rem;
-  font-weight: 800;
-  opacity: 0.94;
-}
-
-/* Wiggle animation for a locked door */
-.door-wrapper.is-shaking {
+/* Wiggle for a locked gift (applied to the inner scene, so the entrance animation is kept) */
+.door-wrapper.is-shaking .door-frame {
   animation: wiggle 0.42s ease-in-out;
 }
 
 @keyframes wiggle {
-  0%, 100% { transform: translateX(0) rotate(0); }
+  0%, 100% { transform: translateX(0); }
   20% { transform: translateX(-5px) rotate(-2deg); }
   45% { transform: translateX(5px) rotate(2deg); }
   70% { transform: translateX(-3px) rotate(-1deg); }
