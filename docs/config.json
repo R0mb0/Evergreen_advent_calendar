@@ -1,0 +1,15 @@
+{
+  "appTitle": "Il Nostro Calendario",
+  "appSubtitle": "Una piccola sorpresa al giorno fino a Natale",
+  "totalDays": 24,
+  "targetMonth": 12,
+  "allowDownload": false,
+  "enableSnow": true,
+  "enableConfetti": true,
+  "defaultLanguage": "auto",
+  "demoMode": {
+    "enabled": true,
+    "simulatedMonth": 12,
+    "simulatedDay": 5
+  }
+}

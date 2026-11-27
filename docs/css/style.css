@@ -1,0 +1,825 @@
+/* =========================================================
+   VARIABILI & TEMA "COZY CUTE 3D"
+   ========================================================= */
+:root {
+  --bg-top: #fff6f8;
+  --bg-mid: #fef1f4;
+  --bg-bottom: #eef5ff;
+
+  --surface: rgba(255, 255, 255, 0.78);
+  --surface-strong: #ffffff;
+  --border-soft: rgba(255, 255, 255, 0.9);
+
+  --text-main: #3b2c35;
+  --text-muted: #7a6672;
+
+  /* Colori festivi moderni & pastello */
+  --berry: #ff5d7d;
+  --berry-dark: #d93f60;
+  --mint: #4ecdc4;
+  --mint-dark: #2ea69e;
+  --gold: #ffb74d;
+  --gold-dark: #e08e1b;
+  --sky: #7ea8ff;
+  --sky-dark: #547fe0;
+  --locked-bg: #ebe4e8;
+  --locked-shadow: #d5cad0;
+
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  --shadow-soft: 0 12px 30px -10px rgba(96, 52, 74, 0.14);
+  --shadow-3d-card: 0 10px 0 rgba(0, 0, 0, 0.08), 0 18px 28px -8px rgba(96, 52, 74, 0.22);
+
+  --font-display: 'Fredoka', system-ui, -apple-system, sans-serif;
+  --font-body: 'Nunito', system-ui, -apple-system, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-main);
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(255, 183, 77, 0.2), transparent 36%),
+    radial-gradient(circle at 88% 18%, rgba(255, 93, 125, 0.16), transparent 38%),
+    radial-gradient(circle at 50% 90%, rgba(126, 168, 255, 0.22), transparent 45%),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 50%, var(--bg-bottom) 100%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+  padding-bottom: 4rem;
+}
+
+/* Canvas neve */
+#snow-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* =========================================================
+   TOOLBAR FLOTTANTE MODERNA
+   ========================================================= */
+.toolbar-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  padding: 0.9rem 1rem 0.5rem;
+}
+
+.toolbar {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  background: var(--surface);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1.5px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-soft);
+}
+
+.toolbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.brand-badge {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--berry), #ff8da3);
+  color: #fff;
+  box-shadow: 0 4px 0 var(--berry-dark), 0 6px 14px rgba(255, 93, 125, 0.35);
+}
+
+.brand-badge svg {
+  width: 20px;
+  height: 20px;
+}
+
+.brand-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.brand-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.date-pill {
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 0.22rem 0.65rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 93, 125, 0.12);
+  color: var(--berry-dark);
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 40px;
+  min-width: 40px;
+  padding: 0 0.75rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(96, 52, 74, 0.08);
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, box-shadow 0.18s ease;
+}
+
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.icon-btn:hover {
+  transform: translateY(-2px);
+  background: #ffffff;
+}
+
+.icon-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 rgba(96, 52, 74, 0.08);
+}
+
+.icon-btn--accent {
+  background: linear-gradient(135deg, var(--berry), #ff7a95);
+  color: #fff;
+  box-shadow: 0 3px 0 var(--berry-dark), 0 6px 14px rgba(255, 93, 125, 0.28);
+}
+
+.icon-btn--accent:hover {
+  background: linear-gradient(135deg, #ff4b6f, #ff708d);
+}
+
+.icon-btn--ghost {
+  background: rgba(59, 44, 53, 0.06);
+  box-shadow: none;
+}
+
+.icon-btn.is-off {
+  opacity: 0.48;
+}
+
+.btn-label-desktop {
+  display: none;
+}
+
+/* =========================================================
+   HERO & CONTENITORE
+   ========================================================= */
+.container {
+  position: relative;
+  z-index: 5;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.95rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid #fff;
+  box-shadow: var(--shadow-soft);
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--berry-dark);
+}
+
+.hero-pill svg {
+  width: 16px;
+  height: 16px;
+  color: var(--gold-dark);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #4b2d3c 0%, var(--berry-dark) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-subtitle {
+  max-width: 520px;
+  font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Barra Demo (solo per testare gli stati nell'Iterazione 1) */
+.demo-bar {
+  margin-top: 0.65rem;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1.5px dashed rgba(217, 63, 96, 0.35);
+  font-size: 0.84rem;
+}
+
+.demo-tag {
+  background: var(--gold);
+  color: #4d2e00;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.74rem;
+}
+
+.demo-bar input[type="range"] {
+  accent-color: var(--berry);
+  cursor: pointer;
+}
+
+.mini-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.65rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 0.78rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.mini-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* =========================================================
+   GRIGLIA RESPONSIVE DELLE CASELLE 3D
+   ========================================================= */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+/* Contenitore singolo giorno con prospettiva 3D */
+.door-wrapper {
+  perspective: 1100px;
+  aspect-ratio: 1 / 1.08;
+  opacity: 0;
+  transform: translateY(18px) scale(0.96);
+  animation: popIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes popIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.door-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(145deg, #fffdf9, #fff2e0);
+  box-shadow:
+    inset 0 6px 16px rgba(126, 78, 56, 0.16),
+    0 12px 24px -10px rgba(96, 52, 74, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+/* Interno della casella (visibile quando lo sportello 3D si apre) */
+.door-inside {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--radius-xl) - 2px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.75rem;
+  text-align: center;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 214, 102, 0.38), transparent 65%),
+    linear-gradient(180deg, #fffaf2 0%, #ffeef2 100%);
+  border: none;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-body);
+  color: var(--text-main);
+  transition: transform 0.2s ease;
+}
+
+.door-inside:hover .inside-icon {
+  transform: scale(1.12) rotate(-6deg);
+}
+
+.inside-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--gold), #ffcf75);
+  color: #fff;
+  box-shadow: 0 5px 0 var(--gold-dark), 0 8px 16px rgba(255, 183, 77, 0.35);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.inside-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.inside-day {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--berry-dark);
+}
+
+.inside-cta {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+/* Sportello 3D rotante */
+.door-panel {
+  position: absolute;
+  inset: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  transition: transform 0.75s cubic-bezier(0.34, 1.38, 0.64, 1);
+  z-index: 2;
+}
+
+/* Effetto hover 3D tattile sulle caselle apribili */
+.door-wrapper.is-available:not(.is-open):hover .door-panel {
+  transform: rotateY(-14deg) translateY(-3px);
+}
+
+/* Stato aperto: sportello spalancato in 3D */
+.door-wrapper.is-open .door-panel {
+  transform: rotateY(-122deg);
+  pointer-events: none; /* Permette il click pulito sull'interno */
+}
+
+/* Faccia anteriore e posteriore dello sportello */
+.door-front,
+.door-back {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-xl);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.door-front {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem;
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.45),
+    0 8px 0 var(--door-depth, rgba(0, 0, 0, 0.14)),
+    0 14px 22px -6px rgba(96, 52, 74, 0.22);
+  overflow: hidden;
+}
+
+/* Luce morbida decorativa sugli sportelli */
+.door-front::before {
+  content: "";
+  position: absolute;
+  top: -30%;
+  left: -20%;
+  width: 90%;
+  height: 70%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.32), transparent 68%);
+  pointer-events: none;
+}
+
+/* Retro dello sportello quando è aperto */
+.door-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #ffe3ea, #fff4f7);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: inset -6px 0 14px rgba(96, 52, 74, 0.08);
+}
+
+/* Palette variate per rendere la griglia allegra e cute */
+.door-wrapper[data-theme="berry"] .door-front {
+  background: linear-gradient(145deg, #ff708d, #ff4f73);
+  --door-depth: #d43758;
+}
+
+.door-wrapper[data-theme="mint"] .door-front {
+  background: linear-gradient(145deg, #62dfd6, #3bc4ba);
+  --door-depth: #279e95;
+}
+
+.door-wrapper[data-theme="gold"] .door-front {
+  background: linear-gradient(145deg, #ffc86b, #ffa938);
+  --door-depth: #d98216;
+}
+
+.door-wrapper[data-theme="sky"] .door-front {
+  background: linear-gradient(145deg, #94b8ff, #6b96f5);
+  --door-depth: #4972d1;
+}
+
+/* Giorno bloccato (futuro) */
+.door-wrapper.is-locked .door-front {
+  background: linear-gradient(145deg, #f3edf0, #e6dce2);
+  color: #8f7b87;
+  --door-depth: #cfc1ca;
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+.door-wrapper.is-locked .door-panel {
+  cursor: not-allowed;
+}
+
+/* Badge speciale per il giorno di OGGI (impulso morbido) */
+.door-wrapper.is-today:not(.is-open) .door-front {
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.55),
+    0 8px 0 var(--door-depth),
+    0 0 0 5px rgba(255, 183, 77, 0.35),
+    0 16px 26px -6px rgba(255, 93, 125, 0.38);
+}
+
+.door-top-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.door-chip {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.26);
+  backdrop-filter: blur(4px);
+}
+
+.door-wrapper.is-locked .door-chip {
+  background: rgba(143, 123, 135, 0.14);
+}
+
+.door-status-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.door-status-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.door-number {
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 5.5vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.12);
+}
+
+.door-wrapper.is-locked .door-number {
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.7);
+}
+
+.door-caption {
+  font-size: 0.78rem;
+  font-weight: 800;
+  opacity: 0.94;
+}
+
+/* Animazione wiggle per casella bloccata */
+.door-wrapper.is-shaking {
+  animation: wiggle 0.42s ease-in-out;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  20% { transform: translateX(-5px) rotate(-2deg); }
+  45% { transform: translateX(5px) rotate(2deg); }
+  70% { transform: translateX(-3px) rotate(-1deg); }
+}
+
+/* =========================================================
+   MODALE CONTENUTO
+   ========================================================= */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(45, 28, 38, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.modal-backdrop[hidden] {
+  display: none;
+}
+
+.modal-backdrop.is-visible {
+  opacity: 1;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 640px;
+  max-height: 88dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-strong);
+  border-radius: 32px;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 28px 60px -15px rgba(45, 28, 38, 0.35);
+  overflow: hidden;
+  transform: translateY(20px) scale(0.95);
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-backdrop.is-visible .modal-card {
+  transform: translateY(0) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.35rem;
+  border-bottom: 1.5px solid #f5eaef;
+}
+
+.modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.modal-badge {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--berry), #ff849d);
+  color: #fff;
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.placeholder-stage {
+  text-align: center;
+  padding: 2rem 1.25rem;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #fff8fa, #f6f9ff);
+  border: 2px dashed rgba(255, 93, 125, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.placeholder-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--gold), #ffd27d);
+  color: #fff;
+  box-shadow: 0 6px 0 var(--gold-dark);
+}
+
+.placeholder-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.placeholder-stage p {
+  max-width: 420px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
+.placeholder-stage code {
+  background: rgba(255, 93, 125, 0.12);
+  color: var(--berry-dark);
+  padding: 0.15rem 0.45rem;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.35rem;
+  background: #fffafb;
+  border-top: 1.5px solid #f5eaef;
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.15rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pill-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.pill-btn:hover {
+  transform: translateY(-2px);
+}
+
+.pill-btn--soft {
+  background: rgba(255, 93, 125, 0.12);
+  color: var(--berry-dark);
+}
+
+.pill-btn--primary {
+  background: linear-gradient(135deg, var(--berry), #ff7a95);
+  color: #fff;
+  box-shadow: 0 4px 0 var(--berry-dark);
+}
+
+/* =========================================================
+   TOAST DI NOTIFICA
+   ========================================================= */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  z-index: 80;
+  transform: translate(-50%, 120px);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-pill);
+  background: #3b2c35;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 14px 30px rgba(45, 28, 38, 0.3);
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  text-align: center;
+  max-width: calc(100% - 2rem);
+}
+
+.toast.is-visible {
+  transform: translate(-50%, 0);
+}
+
+/* =========================================================
+   RESPONSIVE BREAKPOINTS (Mobile -> Tablet -> Desktop)
+   ========================================================= */
+@media (min-width: 560px) {
+  .calendar-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.15rem;
+  }
+
+  .btn-label-desktop {
+    display: inline;
+  }
+}
+
+@media (min-width: 820px) {
+  .calendar-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.35rem;
+  }
+}
+
+@media (min-width: 1080px) {
+  .calendar-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 1.35rem;
+  }
+}
+
+/* Rispetta le preferenze di accessibilità per animazioni ridotte */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

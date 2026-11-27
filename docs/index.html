@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#fff5f7" />
+  <title>Calendario dell'Avvento</title>
+
+  <!-- =========================================================
+       LIBRERIE ESTERNE (pronte per download offline in /libs/)
+       ========================================================= -->
+
+  <!-- 1. Font moderni e arrotondati: Fredoka (titoli/numeri) + Nunito (testi) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- 2. Icone vettoriali arrotondate (Lucide Icons) -->
+  <!-- Offline: salva come ./libs/lucide.min.js -->
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+
+  <!-- 3. Effetto coriandoli all'apertura delle caselle (Canvas Confetti) -->
+  <!-- Offline: salva come ./libs/confetti.browser.min.js -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
+
+  <!-- [Iterazione 3] Qui aggiungeremo PDF.js, Mammoth.js, rtf.js, Marked.js e DOMPurify -->
+
+  <!-- Stili dell'applicazione -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Sfondo neve animata -->
+  <canvas id="snow-canvas" aria-hidden="true"></canvas>
+
+  <!-- Barra degli strumenti flottante -->
+  <header class="toolbar-wrapper">
+    <nav class="toolbar" aria-label="Barra degli strumenti">
+      <div class="toolbar-brand">
+        <div class="brand-badge" aria-hidden="true">
+          <i data-lucide="gift"></i>
+        </div>
+        <div class="brand-text">
+          <span id="toolbar-title" class="brand-title">Calendario</span>
+          <span id="date-pill" class="date-pill">5 Dicembre</span>
+        </div>
+      </div>
+
+      <div class="toolbar-actions">
+        <!-- Toggle Neve -->
+        <button id="btn-snow" class="icon-btn" type="button" title="Attiva/Disattiva neve" aria-label="Attiva o disattiva neve">
+          <i data-lucide="snowflake"></i>
+        </button>
+
+        <!-- Selettore Lingua (verrà collegato al motore i18n nell'Iterazione 2) -->
+        <button id="btn-lang" class="icon-btn" type="button" title="Cambia lingua" aria-label="Cambia lingua">
+          <i data-lucide="globe"></i>
+          <span class="btn-label-sm">IT</span>
+        </button>
+
+        <!-- Installazione PWA (verrà collegata al Service Worker nell'Iterazione 4) -->
+        <button id="btn-install" class="icon-btn icon-btn--accent" type="button" title="Installa App" aria-label="Installa applicazione">
+          <i data-lucide="download"></i>
+          <span class="btn-label-desktop">Installa</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Contenuto principale -->
+  <main class="container">
+    <section class="hero">
+      <div class="hero-pill">
+        <i data-lucide="sparkles"></i>
+        <span id="progress-text">0 / 24 sorprese scoperte</span>
+      </div>
+      <h1 id="hero-title" class="hero-title">Il Nostro Calendario</h1>
+      <p id="hero-subtitle" class="hero-subtitle">
+        Una piccola sorpresa al giorno fino a Natale
+      </p>
+
+      <!-- Controllo rapido di test per l'Iterazione 1 (visibile solo se demoMode è attivo) -->
+      <div id="demo-controls" class="demo-bar" hidden>
+        <span class="demo-tag">Anteprima Dev</span>
+        <label for="demo-day-slider">Giorno simulato: <strong id="demo-day-value">5 Dic</strong></label>
+        <input id="demo-day-slider" type="range" min="1" max="25" value="5" />
+        <button id="btn-reset-demo" class="mini-btn" type="button" title="Richiudi tutte le caselle">
+          <i data-lucide="rotate-ccw"></i> Reset
+        </button>
+      </div>
+    </section>
+
+    <!-- Griglia 3D delle caselle -->
+    <section id="calendar-grid" class="calendar-grid" aria-label="Caselle del calendario dell'avvento">
+      <!-- Generato dinamicamente da app.js -->
+    </section>
+  </main>
+
+  <!-- Modale di visualizzazione contenuto (guscio pronto per l'Iterazione 3) -->
+  <div id="day-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span id="modal-day-badge" class="modal-badge">Giorno 1</span>
+          <h2 id="modal-title" class="modal-title">Sorpresa del giorno</h2>
+        </div>
+        <button id="btn-close-modal" class="icon-btn icon-btn--ghost" type="button" aria-label="Chiudi">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div id="modal-body" class="modal-body">
+        <div class="placeholder-stage">
+          <div class="placeholder-icon">
+            <i data-lucide="party-popper"></i>
+          </div>
+          <h3>Contenuto pronto per l'Iterazione 3!</h3>
+          <p>
+            Qui verranno visualizzati automaticamente immagini, video, audio (incluso Opus),
+            PDF, Word, RTF e testi caricati nella cartella <code id="modal-folder-path">/days/01/</code>.
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btn-comment" class="pill-btn pill-btn--soft" type="button">
+          <i data-lucide="message-square-heart"></i>
+          <span>Commento</span>
+        </button>
+
+        <!-- Nascosto di default quando config.allowDownload === false -->
+        <button id="btn-download-media" class="pill-btn pill-btn--primary" type="button" hidden>
+          <i data-lucide="download"></i>
+          <span>Scarica</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast per notifiche rapide (es. casella ancora bloccata) -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Logica principale -->
+  <script src="js/app.js" defer></script>
+</body>
+</html>
