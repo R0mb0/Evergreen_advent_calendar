@@ -44,26 +44,42 @@
         </div>
         <div class="brand-text">
           <span id="toolbar-title" class="brand-title">Calendario</span>
-          <span id="date-pill" class="date-pill">5 Dicembre</span>
+          <span id="date-pill" class="date-pill" title="">
+            <span id="time-source-dot" class="status-dot" aria-hidden="true"></span>
+            <span id="date-pill-text">...</span>
+          </span>
         </div>
       </div>
 
       <div class="toolbar-actions">
         <!-- Toggle Neve -->
-        <button id="btn-snow" class="icon-btn" type="button" title="Attiva/Disattiva neve" aria-label="Attiva o disattiva neve">
+        <button id="btn-snow" class="icon-btn" type="button" title="Attiva o disattiva neve" aria-label="Attiva o disattiva neve">
           <i data-lucide="snowflake"></i>
         </button>
 
-        <!-- Selettore Lingua (verrà collegato al motore i18n nell'Iterazione 2) -->
-        <button id="btn-lang" class="icon-btn" type="button" title="Cambia lingua" aria-label="Cambia lingua">
-          <i data-lucide="globe"></i>
-          <span class="btn-label-sm">IT</span>
-        </button>
+        <!-- Selettore Lingua con menu a tendina -->
+        <div class="lang-picker">
+          <button
+            id="btn-lang"
+            class="icon-btn"
+            type="button"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            aria-controls="lang-menu"
+          >
+            <i data-lucide="globe"></i>
+            <span id="lang-code-label" class="btn-label-sm">IT</span>
+          </button>
 
-        <!-- Installazione PWA (verrà collegata al Service Worker nell'Iterazione 4) -->
-        <button id="btn-install" class="icon-btn icon-btn--accent" type="button" title="Installa App" aria-label="Installa applicazione">
+          <div id="lang-menu" class="lang-menu" role="menu" hidden>
+            <!-- Popolato da app.js -->
+          </div>
+        </div>
+
+        <!-- Installazione PWA (Iterazione 4) -->
+        <button id="btn-install" class="icon-btn icon-btn--accent" type="button">
           <i data-lucide="download"></i>
-          <span class="btn-label-desktop">Installa</span>
+          <span id="btn-install-label" class="btn-label-desktop">Installa</span>
         </button>
       </div>
     </nav>
@@ -74,37 +90,65 @@
     <section class="hero">
       <div class="hero-pill">
         <i data-lucide="sparkles"></i>
-        <span id="progress-text">0 / 24 sorprese scoperte</span>
+        <span id="progress-text">0 / 24</span>
       </div>
-      <h1 id="hero-title" class="hero-title">Il Nostro Calendario</h1>
-      <p id="hero-subtitle" class="hero-subtitle">
-        Una piccola sorpresa al giorno fino a Natale
-      </p>
+      <h1 id="hero-title" class="hero-title">Calendario</h1>
+      <p id="hero-subtitle" class="hero-subtitle"></p>
 
-      <!-- Controllo rapido di test per l'Iterazione 1 (visibile solo se demoMode è attivo) -->
+      <!-- Banner visibile automaticamente se non siamo nel mese target (es. fuori da Dicembre) -->
+      <div id="off-month-banner" class="info-banner" hidden>
+        <i data-lucide="calendar-clock"></i>
+        <span id="off-month-text"></span>
+      </div>
+
+      <!-- Barra Demo per testare date, mesi e riapertura multi-anno -->
       <div id="demo-controls" class="demo-bar" hidden>
-        <span class="demo-tag">Anteprima Dev</span>
-        <label for="demo-day-slider">Giorno simulato: <strong id="demo-day-value">5 Dic</strong></label>
-        <input id="demo-day-slider" type="range" min="1" max="25" value="5" />
-        <button id="btn-reset-demo" class="mini-btn" type="button" title="Richiudi tutte le caselle">
-          <i data-lucide="rotate-ccw"></i> Reset
+        <span id="demo-tag-label" class="demo-tag">Anteprima Dev</span>
+
+        <label class="demo-field">
+          <span id="demo-year-label">Anno</span>
+          <select id="demo-year-select">
+            <option value="2025">2025</option>
+            <option value="2026" selected>2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+          </select>
+        </label>
+
+        <label class="demo-field">
+          <span id="demo-month-label">Mese</span>
+          <select id="demo-month-select">
+            <option value="11">11</option>
+            <option value="12" selected>12</option>
+            <option value="1">1</option>
+          </select>
+        </label>
+
+        <label class="demo-field" for="demo-day-slider">
+          <span id="demo-day-label">Giorno</span>: <strong id="demo-day-value">5</strong>
+          <input id="demo-day-slider" type="range" min="1" max="25" value="5" />
+        </label>
+
+        <button id="btn-reset-demo" class="mini-btn" type="button">
+          <i data-lucide="rotate-ccw"></i>
+          <span id="demo-reset-label">Reset</span>
         </button>
       </div>
     </section>
 
     <!-- Griglia 3D delle caselle -->
-    <section id="calendar-grid" class="calendar-grid" aria-label="Caselle del calendario dell'avvento">
+    <section id="calendar-grid" class="calendar-grid" aria-label="Caselle del calendario">
       <!-- Generato dinamicamente da app.js -->
     </section>
   </main>
 
-  <!-- Modale di visualizzazione contenuto (guscio pronto per l'Iterazione 3) -->
+  <!-- Modale di visualizzazione contenuto -->
   <div id="day-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
     <div class="modal-card">
       <div class="modal-header">
         <div class="modal-title-group">
-          <span id="modal-day-badge" class="modal-badge">Giorno 1</span>
-          <h2 id="modal-title" class="modal-title">Sorpresa del giorno</h2>
+          <span id="modal-day-badge" class="modal-badge"></span>
+          <h2 id="modal-title" class="modal-title"></h2>
         </div>
         <button id="btn-close-modal" class="icon-btn icon-btn--ghost" type="button" aria-label="Chiudi">
           <i data-lucide="x"></i>
@@ -116,10 +160,10 @@
           <div class="placeholder-icon">
             <i data-lucide="party-popper"></i>
           </div>
-          <h3>Contenuto pronto per l'Iterazione 3!</h3>
+          <h3 id="placeholder-title"></h3>
           <p>
-            Qui verranno visualizzati automaticamente immagini, video, audio (incluso Opus),
-            PDF, Word, RTF e testi caricati nella cartella <code id="modal-folder-path">/days/01/</code>.
+            <span id="placeholder-desc"></span>
+            <code id="modal-folder-path">/days/01/</code>.
           </p>
         </div>
       </div>
@@ -127,22 +171,23 @@
       <div class="modal-footer">
         <button id="btn-comment" class="pill-btn pill-btn--soft" type="button">
           <i data-lucide="message-square-heart"></i>
-          <span>Commento</span>
+          <span id="btn-comment-label">Commento</span>
         </button>
 
-        <!-- Nascosto di default quando config.allowDownload === false -->
         <button id="btn-download-media" class="pill-btn pill-btn--primary" type="button" hidden>
           <i data-lucide="download"></i>
-          <span>Scarica</span>
+          <span id="btn-download-label">Scarica</span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Toast per notifiche rapide (es. casella ancora bloccata) -->
+  <!-- Toast notifiche -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- Logica principale -->
+  <!-- Moduli applicazione -->
+  <script src="js/i18n.js" defer></script>
+  <script src="js/time-storage.js" defer></script>
   <script src="js/app.js" defer></script>
 </body>
 </html>
