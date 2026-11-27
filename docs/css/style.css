@@ -981,3 +981,409 @@ body {
   background: rgba(255, 93, 125, 0.1);
   color: var(--berry-dark);
 }
+
+/* =========================================================
+   ITERAZIONE 3: MOTORE MULTIMEDIALE, AUDIO, PDF & MARKDOWN
+   ========================================================= */
+.modal-card--wide {
+  max-width: 760px;
+}
+
+/* Protezione anti-download (disattiva selezione e salvataggio su long-press mobile) */
+.modal-body[data-protected="true"] img,
+.modal-body[data-protected="true"] video,
+.modal-body[data-protected="true"] canvas {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Linguette per giorni con più file */
+.media-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 0 1.4rem 0.75rem;
+  border-bottom: 1px solid rgba(59, 44, 53, 0.08);
+}
+
+.media-tabs[hidden] {
+  display: none;
+}
+
+.media-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.42rem 0.85rem;
+  border: 1.5px solid rgba(59, 44, 53, 0.1);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: transform 0.16s ease, background-color 0.16s ease, color 0.16s ease;
+}
+
+.media-tab svg {
+  width: 15px;
+  height: 15px;
+}
+
+.media-tab:hover {
+  transform: translateY(-1px);
+  color: var(--text-main);
+}
+
+.media-tab.is-active {
+  background: linear-gradient(135deg, var(--berry), #ff7a6b);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 6px 14px -4px rgba(255, 93, 125, 0.45);
+}
+
+/* Indicatore presenza commento nel pulsante footer */
+.comment-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--berry);
+  box-shadow: 0 0 0 3px rgba(255, 93, 125, 0.22);
+}
+
+.comment-dot[hidden] {
+  display: none;
+}
+
+.pill-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.pill-btn.is-active-toggle {
+  background: linear-gradient(135deg, var(--sky), var(--sky-dark));
+  color: #ffffff;
+}
+
+/* Spinner caricamento */
+.viewer-state {
+  min-height: 230px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.viewer-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 93, 125, 0.2);
+  border-top-color: var(--berry);
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Immagini e Video */
+.media-visual-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff5f8, #f4fbff);
+  border-radius: 22px;
+  padding: 0.65rem;
+  overflow: hidden;
+}
+
+.media-image,
+.media-video {
+  max-width: 100%;
+  max-height: 60vh;
+  border-radius: 16px;
+  display: block;
+  object-fit: contain;
+  box-shadow: 0 10px 26px -12px rgba(60, 32, 48, 0.25);
+}
+
+/* Player Audio personalizzato (MP3 / OGG / WAV / WhatsApp OPUS) */
+.audio-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.6rem 1.4rem;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #fff4f7, #f0fbf9 65%, #fff9ed);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.audio-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.audio-badge-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--berry), var(--gold-dark));
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 22px -8px rgba(255, 93, 125, 0.5);
+}
+
+.audio-badge-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.audio-wave {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 44px;
+}
+
+.audio-wave span {
+  width: 5px;
+  height: 12px;
+  border-radius: 99px;
+  background: linear-gradient(180deg, var(--berry), var(--mint-dark));
+  opacity: 0.45;
+  transition: height 0.2s ease, opacity 0.2s ease;
+}
+
+.audio-card.is-playing .audio-wave span {
+  opacity: 1;
+  animation: waveBounce 0.95s ease-in-out infinite;
+}
+
+.audio-card.is-playing .audio-wave span:nth-child(2n) { animation-delay: 0.15s; }
+.audio-card.is-playing .audio-wave span:nth-child(3n) { animation-delay: 0.3s; }
+.audio-card.is-playing .audio-wave span:nth-child(4n) { animation-delay: 0.45s; }
+
+@keyframes waveBounce {
+  0%, 100% { height: 10px; }
+  50% { height: 38px; }
+}
+
+.audio-meta {
+  text-align: center;
+}
+
+.audio-kind {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--berry-dark);
+  background: rgba(255, 93, 125, 0.12);
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  margin-bottom: 0.3rem;
+}
+
+.audio-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+}
+
+.audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.audio-play-btn {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--berry), #ff7a6b);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 8px 18px -6px rgba(255, 93, 125, 0.55);
+  transition: transform 0.18s ease;
+}
+
+.audio-play-btn:hover {
+  transform: scale(1.06);
+}
+
+.audio-play-btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.audio-progress-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.audio-seek {
+  width: 100%;
+  accent-color: var(--berry);
+  cursor: pointer;
+}
+
+.audio-times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.audio-status {
+  margin: 0;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--berry-dark);
+}
+
+/* Viewer PDF su Canvas */
+.pdf-viewer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pdf-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 16px;
+  background: #fff4f7;
+}
+
+.pdf-nav,
+.pdf-zoom {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.pdf-page-label,
+.pdf-zoom-val {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--text-main);
+  min-width: 50px;
+  text-align: center;
+}
+
+.pdf-canvas-stage {
+  max-height: 55vh;
+  overflow: auto;
+  padding: 0.75rem;
+  border-radius: 18px;
+  background: #f5f2f6;
+  display: flex;
+  justify-content: center;
+}
+
+.pdf-canvas {
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 8px 22px -10px rgba(60, 32, 48, 0.25);
+}
+
+/* Fogli documenti (DOCX, RTF, TXT, Markdown) */
+.doc-sheet {
+  padding: 1.4rem 1.5rem;
+  border-radius: 22px;
+  background: #ffffff;
+  border: 1.5px solid rgba(59, 44, 53, 0.08);
+  box-shadow: 0 10px 26px -18px rgba(60, 32, 48, 0.28);
+  color: var(--text-main);
+  line-height: 1.65;
+  font-size: 0.98rem;
+  overflow-wrap: anywhere;
+}
+
+.doc-sheet--plain {
+  white-space: pre-wrap;
+  font-family: var(--font-body);
+  background: linear-gradient(180deg, #fffdf9, #ffffff);
+}
+
+.md-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.8rem;
+  margin-bottom: 0.9rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 93, 125, 0.12);
+  color: var(--berry-dark);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.md-banner svg {
+  width: 15px;
+  height: 15px;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.doc-sheet h1,
+.doc-sheet h2,
+.doc-sheet h3 {
+  font-family: var(--font-display);
+  margin-top: 0.4rem;
+  margin-bottom: 0.55rem;
+  line-height: 1.25;
+}
+
+.markdown-body blockquote {
+  margin: 0.9rem 0;
+  padding: 0.7rem 1rem;
+  border-left: 4px solid var(--berry);
+  border-radius: 0 14px 14px 0;
+  background: #fff5f8;
+  color: var(--text-muted);
+}
+
+.markdown-body code {
+  padding: 0.12rem 0.4rem;
+  border-radius: 7px;
+  background: rgba(255, 93, 125, 0.12);
+  color: var(--berry-dark);
+  font-size: 0.88em;
+}
+
+.markdown-body a {
+  color: var(--berry-dark);
+  font-weight: 800;
+}
+
+.markdown-body img,
+.doc-sheet img {
+  max-width: 100%;
+  border-radius: 14px;
+}

@@ -1,0 +1,15 @@
+{
+  "days": {
+    "01": {
+      "files": ["pensiero.txt"],
+      "readme": "Readme.md"
+    },
+    "02": {
+      "files": ["foto.jpg", "vocale_whatsapp.opus"],
+      "readme": "Readme.md"
+    },
+    "03": {
+      "files": ["ricetta.pdf"]
+    }
+  }
+}

@@ -19,14 +19,29 @@
   />
 
   <!-- 2. Icone vettoriali arrotondate (Lucide Icons) -->
-  <!-- Offline: salva come ./libs/lucide.min.js -->
+  <!-- Offline: ./libs/lucide.min.js -->
   <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
 
-  <!-- 3. Effetto coriandoli all'apertura delle caselle (Canvas Confetti) -->
-  <!-- Offline: salva come ./libs/confetti.browser.min.js -->
+  <!-- 3. Coriandoli all'apertura (Canvas Confetti) -->
+  <!-- Offline: ./libs/confetti.browser.min.js -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
 
-  <!-- [Iterazione 3] Qui aggiungeremo PDF.js, Mammoth.js, rtf.js, Marked.js e DOMPurify -->
+  <!-- 4. Lettore Markdown + Sanitizzazione HTML (Marked + DOMPurify) -->
+  <!-- Offline: ./libs/marked.min.js e ./libs/purify.min.js -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js" defer></script>
+
+  <!-- 5. Lettore documenti Word .docx (Mammoth.js) -->
+  <!-- Offline: ./libs/mammoth.browser.min.js -->
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js" defer></script>
+
+  <!-- 6. Lettore PDF su Canvas senza toolbar download (PDF.js UMD) -->
+  <!-- Offline: ./libs/pdf.min.js (e ./libs/pdf.worker.min.js configurato in media-viewer.js) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+
+  <!-- 7. Fallback decoder WASM per vocali .opus su browser che non li leggono nativamente (es. Safari/iOS) -->
+  <!-- Offline: ./libs/ogg-opus-decoder.min.js -->
+  <script src="https://cdn.jsdelivr.net/npm/ogg-opus-decoder@1.7.0/dist/ogg-opus-decoder.min.js" defer></script>
 
   <!-- Stili dell'applicazione -->
   <link rel="stylesheet" href="css/style.css" />
@@ -71,9 +86,7 @@
             <span id="lang-code-label" class="btn-label-sm">IT</span>
           </button>
 
-          <div id="lang-menu" class="lang-menu" role="menu" hidden>
-            <!-- Popolato da app.js -->
-          </div>
+          <div id="lang-menu" class="lang-menu" role="menu" hidden></div>
         </div>
 
         <!-- Installazione PWA (Iterazione 4) -->
@@ -95,7 +108,7 @@
       <h1 id="hero-title" class="hero-title">Calendario</h1>
       <p id="hero-subtitle" class="hero-subtitle"></p>
 
-      <!-- Banner visibile automaticamente se non siamo nel mese target (es. fuori da Dicembre) -->
+      <!-- Banner visibile automaticamente fuori dal mese target -->
       <div id="off-month-banner" class="info-banner" hidden>
         <i data-lucide="calendar-clock"></i>
         <span id="off-month-text"></span>
@@ -137,14 +150,12 @@
     </section>
 
     <!-- Griglia 3D delle caselle -->
-    <section id="calendar-grid" class="calendar-grid" aria-label="Caselle del calendario">
-      <!-- Generato dinamicamente da app.js -->
-    </section>
+    <section id="calendar-grid" class="calendar-grid" aria-label="Caselle del calendario"></section>
   </main>
 
   <!-- Modale di visualizzazione contenuto -->
   <div id="day-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
-    <div class="modal-card">
+    <div class="modal-card modal-card--wide">
       <div class="modal-header">
         <div class="modal-title-group">
           <span id="modal-day-badge" class="modal-badge"></span>
@@ -155,23 +166,17 @@
         </button>
       </div>
 
-      <div id="modal-body" class="modal-body">
-        <div class="placeholder-stage">
-          <div class="placeholder-icon">
-            <i data-lucide="party-popper"></i>
-          </div>
-          <h3 id="placeholder-title"></h3>
-          <p>
-            <span id="placeholder-desc"></span>
-            <code id="modal-folder-path">/days/01/</code>.
-          </p>
-        </div>
-      </div>
+      <!-- Barra di selezione se il giorno contiene più file -->
+      <div id="modal-file-tabs" class="media-tabs" hidden></div>
+
+      <!-- Area dinamica gestita da AdventMediaViewer -->
+      <div id="modal-body" class="modal-body"></div>
 
       <div class="modal-footer">
         <button id="btn-comment" class="pill-btn pill-btn--soft" type="button">
           <i data-lucide="message-square-heart"></i>
           <span id="btn-comment-label">Commento</span>
+          <span id="comment-dot" class="comment-dot" hidden></span>
         </button>
 
         <button id="btn-download-media" class="pill-btn pill-btn--primary" type="button" hidden>
@@ -188,6 +193,7 @@
   <!-- Moduli applicazione -->
   <script src="js/i18n.js" defer></script>
   <script src="js/time-storage.js" defer></script>
+  <script src="js/media-viewer.js" defer></script>
   <script src="js/app.js" defer></script>
 </body>
 </html>
