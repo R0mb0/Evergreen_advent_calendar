@@ -17,7 +17,7 @@ A cute, modern, 100% client-side 3D Advent Calendar Progressive Web App (PWA) bu
 
 ---
 
-<!-- Replace or remove badges as needed -->
+[![Build Jekyll & Deploy Evergreen Advent Calendar](https://github.com/R0mb0/Evergreen_advent_calendar/actions/workflows/jekyll_build.yml/badge.svg)](https://github.com/R0mb0/Evergreen_advent_calendar/actions/workflows/jekyll_build.yml)
 [![pages-build-deployment](https://github.com/R0mb0/Evergreen_advent_calendar/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/R0mb0/Evergreen_advent_calendar/actions/workflows/pages/pages-build-deployment)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/R0mb0/Evergreen_advent_calendar)
 [![Open Source Love svg3](https://badges.frapsoft.com/os/v3/open-source.svg?v=103)](https://github.com/R0mb0/Evergreen_advent_calendar)
@@ -92,3 +92,12 @@ Evergreen_advent_calendar/
     │   ├── love_letter.pdf
     │   └── Readme.md
     └── ...
+```
+
+<a href="https://github.com/R0mb0/Crafted_with_AI">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://github.com/R0mb0/Crafted_with_AI/blob/main/Badge/SVG/CraftedWithAIDark.svg">
+<source media="(prefers-color-scheme: light)" srcset="https://github.com/R0mb0/Crafted_with_AI/blob/main/Badge/SVG/NotMadeByAILight.svg">
+<img alt="Crafted with AI" src="https://github.com/R0mb0/Crafted_with_AI/blob/main/Badge/SVG/NotMadeByAIDefault.svg">
+</picture>
+</a>
