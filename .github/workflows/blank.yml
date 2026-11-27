@@ -1,0 +1,101 @@
+name: Build Jekyll & Deploy Evergreen Advent Calendar
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+env:
+  SITE_DIR: docs
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Genera automaticamente days/manifest.json
+        run: |
+          python3 - <<'EOF'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          days_dir = Path(os.environ["SITE_DIR"]) / "days"
+          days_dir.mkdir(parents=True, exist_ok=True)
+
+          IGNORED_FILES = {".ds_store", ".gitkeep", "thumbs.db", "desktop.ini"}
+          manifest = {"days": {}}
+
+          day_folders = [
+              d for d in days_dir.iterdir()
+              if d.is_dir() and re.fullmatch(r"\d{2}", d.name)
+          ]
+
+          for folder in sorted(day_folders, key=lambda d: int(d.name)):
+              files = []
+              readme = None
+
+              for item in sorted(folder.iterdir(), key=lambda p: p.name.lower()):
+                  if not item.is_file():
+                      continue
+                  lower_name = item.name.lower()
+                  if item.name.startswith(".") or lower_name in IGNORED_FILES:
+                      continue
+                  if lower_name == "readme.md":
+                      readme = item.name
+                  else:
+                      files.append(item.name)
+
+              if not files and not readme:
+                  continue
+
+              entry = {"files": files}
+              if readme:
+                  entry["readme"] = readme
+
+              manifest["days"][folder.name] = entry
+
+          out_file = days_dir / "manifest.json"
+          out_file.write_text(
+              json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
+              encoding="utf-8",
+          )
+          print(f"Generato {out_file} con {len(manifest['days'])} giorni.")
+          EOF
+
+      - name: Configura GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build con Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./docs
+          destination: ./_site
+
+      - name: Carica artefatto Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy su GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
