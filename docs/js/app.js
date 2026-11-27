@@ -92,7 +92,7 @@
   let toastTimer = null;
 
   /* =========================================================
-     INIZIALIZZAZIONE
+     INITIALIZATION
      ========================================================= */
   async function init() {
     await loadConfig();
@@ -115,7 +115,7 @@
   async function loadConfig() {
     try {
       const response = await fetch('./config.json', { cache: 'no-store' });
-      if (!response.ok) throw new Error('Config non trovata');
+      if (!response.ok) throw new Error('Config not found');
       const data = await response.json();
       state.config = { ...FALLBACK_CONFIG, ...data };
     } catch {
@@ -124,7 +124,7 @@
   }
 
   /* =========================================================
-     TRADUZIONI & STATO INTERFACCIA
+     TRANSLATIONS & UI STATE
      ========================================================= */
   function applyTranslationsAndUI() {
     const title = I18n.pickConfigText(state.config.appTitle, 'defaultTitle');
@@ -226,7 +226,7 @@
   }
 
   /* =========================================================
-     MENU LINGUE
+     LANGUAGE MENU
      ========================================================= */
   function renderLanguageMenu() {
     els.langMenu.innerHTML = '';
@@ -274,7 +274,7 @@
   }
 
   /* =========================================================
-     LOGICA SBLOCCO & RENDERING GRIGLIA 3D
+     UNLOCK LOGIC & 3D GRID RENDERING
      ========================================================= */
   function isDayUnlockable(day) {
     return state.dateInfo.month === state.config.targetMonth && day <= state.dateInfo.day;
@@ -427,7 +427,7 @@
   }
 
   /* =========================================================
-     MODALE & INTEGRAZIONE MEDIA VIEWER
+     MODAL & MEDIA VIEWER INTEGRATION
      ========================================================= */
   function updateModalHeader(day) {
     const longDate = I18n.formatDayMonth(day, state.config.targetMonth, 'long');
@@ -483,7 +483,7 @@
   }
 
   /* =========================================================
-     EVENTI INTERFACCIA
+     UI EVENTS
      ========================================================= */
   function bindEvents() {
     els.btnCloseModal.addEventListener('click', closeModal);
@@ -531,7 +531,7 @@
       if (msg) showToast(msg);
     });
 
-    // Controlli Demo (Anno, Mese, Giorno)
+    // Demo controls (year, month, day)
     els.demoYearSelect.addEventListener('change', (e) => {
       state.dateInfo.year = Number(e.target.value);
       updateDateAndProgress();
@@ -560,7 +560,7 @@
   }
 
   /* =========================================================
-     NEVE SOFFICE IN BACKGROUND
+     SOFT BACKGROUND SNOW
      ========================================================= */
   function initSnow() {
     const canvas = els.snowCanvas;

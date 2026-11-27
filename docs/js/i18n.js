@@ -406,7 +406,7 @@ window.AdventI18n = (() => {
     try {
       localStorage.setItem(STORAGE_LANG_KEY, code);
     } catch {
-      // Ignora errori in modalità privata
+      // Ignore errors in private mode
     }
     return true;
   }
@@ -433,7 +433,7 @@ window.AdventI18n = (() => {
     return template;
   }
 
-  // Risolve un campo di config.json sia se è una stringa unica sia se è un dizionario per lingua
+  // Resolves a config.json field, whether it is a single string or a per-language dictionary
   function pickConfigText(value, fallbackKey) {
     if (typeof value === 'string' && value.trim()) return value;
     if (value && typeof value === 'object') {
@@ -444,7 +444,7 @@ window.AdventI18n = (() => {
 
   function formatDayMonth(day, month, style = 'long') {
     const locale = getLanguageMeta().locale;
-    // Usiamo un anno bisestile neutro (2024) in UTC per evitare slittamenti di fuso orario
+    // Use a neutral leap year (2024) in UTC to avoid time zone shifts
     const date = new Date(Date.UTC(2024, month - 1, day, 12, 0, 0));
     return new Intl.DateTimeFormat(locale, {
       day: 'numeric',

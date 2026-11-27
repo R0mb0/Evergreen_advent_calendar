@@ -1,5 +1,5 @@
 /* =========================================================
-   VARIABILI & TEMA "COZY CUTE 3D"
+   VARIABLES & "COZY CUTE 3D" THEME
    ========================================================= */
 :root {
   --bg-top: #fff6f8;
@@ -13,7 +13,7 @@
   --text-main: #3b2c35;
   --text-muted: #7a6672;
 
-  /* Colori festivi moderni & pastello */
+  /* Modern festive pastel colors */
   --berry: #ff5d7d;
   --berry-dark: #d93f60;
   --mint: #4ecdc4;
@@ -63,7 +63,7 @@ body {
   padding-bottom: 4rem;
 }
 
-/* Canvas neve */
+/* Snow canvas */
 #snow-canvas {
   position: fixed;
   inset: 0;
@@ -74,7 +74,7 @@ body {
 }
 
 /* =========================================================
-   TOOLBAR FLOTTANTE MODERNA
+   MODERN FLOATING TOOLBAR
    ========================================================= */
 .toolbar-wrapper {
   position: sticky;
@@ -214,7 +214,7 @@ body {
 }
 
 /* =========================================================
-   HERO & CONTENITORE
+   HERO & CONTAINER
    ========================================================= */
 .container {
   position: relative;
@@ -271,7 +271,7 @@ body {
   font-weight: 600;
 }
 
-/* Barra Demo (solo per testare gli stati nell'Iterazione 1) */
+/* Demo bar (only used to test the different states) */
 .demo-bar {
   margin-top: 0.65rem;
   display: inline-flex;
@@ -322,7 +322,7 @@ body {
 }
 
 /* =========================================================
-   GRIGLIA RESPONSIVE DELLE CASELLE 3D
+   RESPONSIVE GRID OF 3D DOORS
    ========================================================= */
 .calendar-grid {
   display: grid;
@@ -330,7 +330,7 @@ body {
   gap: 1rem;
 }
 
-/* Contenitore singolo giorno con prospettiva 3D */
+/* Single day container with 3D perspective */
 .door-wrapper {
   perspective: 1100px;
   aspect-ratio: 1 / 1.08;
@@ -358,7 +358,7 @@ body {
   border: 2px solid rgba(255, 255, 255, 0.85);
 }
 
-/* Interno della casella (visibile quando lo sportello 3D si apre) */
+/* Inside of the door (visible when the 3D door opens) */
 .door-inside {
   position: absolute;
   inset: 0;
@@ -416,7 +416,7 @@ body {
   color: var(--text-muted);
 }
 
-/* Sportello 3D rotante */
+/* Rotating 3D door */
 .door-panel {
   position: absolute;
   inset: -2px;
@@ -432,18 +432,18 @@ body {
   z-index: 2;
 }
 
-/* Effetto hover 3D tattile sulle caselle apribili */
+/* Tactile 3D hover effect on openable doors */
 .door-wrapper.is-available:not(.is-open):hover .door-panel {
   transform: rotateY(-14deg) translateY(-3px);
 }
 
-/* Stato aperto: sportello spalancato in 3D */
+/* Open state: door swung wide open in 3D */
 .door-wrapper.is-open .door-panel {
   transform: rotateY(-122deg);
-  pointer-events: none; /* Permette il click pulito sull'interno */
+  pointer-events: none; /* Allows a clean click on the inside */
 }
 
-/* Faccia anteriore e posteriore dello sportello */
+/* Front and back face of the door */
 .door-front,
 .door-back {
   position: absolute;
@@ -468,7 +468,7 @@ body {
   overflow: hidden;
 }
 
-/* Luce morbida decorativa sugli sportelli */
+/* Soft decorative light on the doors */
 .door-front::before {
   content: "";
   position: absolute;
@@ -480,7 +480,7 @@ body {
   pointer-events: none;
 }
 
-/* Retro dello sportello quando è aperto */
+/* Back of the door when open */
 .door-back {
   transform: rotateY(180deg);
   background: linear-gradient(135deg, #ffe3ea, #fff4f7);
@@ -488,7 +488,7 @@ body {
   box-shadow: inset -6px 0 14px rgba(96, 52, 74, 0.08);
 }
 
-/* Palette variate per rendere la griglia allegra e cute */
+/* Varied palettes to make the grid cheerful and cute */
 .door-wrapper[data-theme="berry"] .door-front {
   background: linear-gradient(145deg, #ff708d, #ff4f73);
   --door-depth: #d43758;
@@ -509,7 +509,7 @@ body {
   --door-depth: #4972d1;
 }
 
-/* Giorno bloccato (futuro) */
+/* Locked day (future) */
 .door-wrapper.is-locked .door-front {
   background: linear-gradient(145deg, #f3edf0, #e6dce2);
   color: #8f7b87;
@@ -521,7 +521,7 @@ body {
   cursor: not-allowed;
 }
 
-/* Badge speciale per il giorno di OGGI (impulso morbido) */
+/* Special badge for TODAY (soft pulse) */
 .door-wrapper.is-today:not(.is-open) .door-front {
   box-shadow:
     inset 0 2px 3px rgba(255, 255, 255, 0.55),
@@ -582,7 +582,7 @@ body {
   opacity: 0.94;
 }
 
-/* Animazione wiggle per casella bloccata */
+/* Wiggle animation for a locked door */
 .door-wrapper.is-shaking {
   animation: wiggle 0.42s ease-in-out;
 }
@@ -595,7 +595,7 @@ body {
 }
 
 /* =========================================================
-   MODALE CONTENUTO
+   CONTENT MODAL
    ========================================================= */
 .modal-backdrop {
   position: fixed;
@@ -763,7 +763,7 @@ body {
 }
 
 /* =========================================================
-   TOAST DI NOTIFICA
+   NOTIFICATION TOAST
    ========================================================= */
 .toast {
   position: fixed;
@@ -816,7 +816,7 @@ body {
   }
 }
 
-/* Rispetta le preferenze di accessibilità per animazioni ridotte */
+/* Respect the accessibility preference for reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -825,7 +825,7 @@ body {
 }
 
 /* =========================================================
-   ITERAZIONE 2: MENU LINGUE, STATO SERVER & BANNER FUORI MESE
+   LANGUAGE MENU, SERVER STATE & OFF-MONTH BANNER
    ========================================================= */
 .date-pill {
   display: inline-flex;
@@ -856,7 +856,7 @@ body {
   box-shadow: 0 0 0 3px rgba(126, 168, 255, 0.28);
 }
 
-/* Selettore lingue a tendina */
+/* Language dropdown picker */
 .lang-picker {
   position: relative;
 }
@@ -930,7 +930,7 @@ body {
   gap: 0.5rem;
 }
 
-/* Banner informativo fuori dal mese target */
+/* Informational banner outside the target month */
 .info-banner {
   margin-top: 0.35rem;
   display: inline-flex;
@@ -954,7 +954,7 @@ body {
   flex-shrink: 0;
 }
 
-/* Controlli anno/mese nella barra demo */
+/* Year/month controls in the demo bar */
 .demo-field {
   display: inline-flex;
   align-items: center;
@@ -983,13 +983,13 @@ body {
 }
 
 /* =========================================================
-   ITERAZIONE 3: MOTORE MULTIMEDIALE, AUDIO, PDF & MARKDOWN
+   MEDIA ENGINE, AUDIO, PDF & MARKDOWN
    ========================================================= */
 .modal-card--wide {
   max-width: 760px;
 }
 
-/* Protezione anti-download (disattiva selezione e salvataggio su long-press mobile) */
+/* Anti-download protection (disables selection and long-press saving on mobile) */
 .modal-body[data-protected="true"] img,
 .modal-body[data-protected="true"] video,
 .modal-body[data-protected="true"] canvas {
@@ -998,7 +998,7 @@ body {
   -webkit-touch-callout: none;
 }
 
-/* Linguette per giorni con più file */
+/* Tabs for days with more than one file */
 .media-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -1044,7 +1044,7 @@ body {
   box-shadow: 0 6px 14px -4px rgba(255, 93, 125, 0.45);
 }
 
-/* Indicatore presenza commento nel pulsante footer */
+/* Comment indicator in the footer button */
 .comment-dot {
   width: 8px;
   height: 8px;
@@ -1068,7 +1068,7 @@ body {
   color: #ffffff;
 }
 
-/* Spinner caricamento */
+/* Loading spinner */
 .viewer-state {
   min-height: 230px;
   display: flex;
@@ -1093,7 +1093,7 @@ body {
   to { transform: rotate(360deg); }
 }
 
-/* Immagini e Video */
+/* Images and videos */
 .media-visual-frame {
   display: flex;
   align-items: center;
@@ -1114,7 +1114,7 @@ body {
   box-shadow: 0 10px 26px -12px rgba(60, 32, 48, 0.25);
 }
 
-/* Player Audio personalizzato (MP3 / OGG / WAV / WhatsApp OPUS) */
+/* Custom audio player (MP3 / OGG / WAV / WhatsApp OPUS) */
 .audio-card {
   display: flex;
   flex-direction: column;
@@ -1261,7 +1261,7 @@ body {
   color: var(--berry-dark);
 }
 
-/* Viewer PDF su Canvas */
+/* Canvas PDF viewer */
 .pdf-viewer {
   display: flex;
   flex-direction: column;
@@ -1311,7 +1311,7 @@ body {
   box-shadow: 0 8px 22px -10px rgba(60, 32, 48, 0.25);
 }
 
-/* Fogli documenti (DOCX, RTF, TXT, Markdown) */
+/* Document sheets (DOCX, RTF, TXT, Markdown) */
 .doc-sheet {
   padding: 1.4rem 1.5rem;
   border-radius: 22px;
@@ -1452,9 +1452,9 @@ body {
   padding: 0.4rem 0.6rem;
 }
 /* =========================================================
-   ATTRIBUTO [hidden]
-   Le classi con "display" esplicito (.icon-btn, .pill-btn, .demo-bar...)
-   sovrascriverebbero il valore di default del browser: lo forziamo.
+   [hidden] ATTRIBUTE
+   Classes with an explicit "display" (.icon-btn, .pill-btn, .demo-bar...)
+   would override the browser default, so we force it.
    ========================================================= */
 [hidden] {
   display: none !important;

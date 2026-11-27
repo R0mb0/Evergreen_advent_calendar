@@ -5,7 +5,7 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
-# Permessi minimi a livello di workflow: ogni job aggiunge solo ciò che gli serve
+# Minimal permissions at workflow level: each job adds only what it needs
 permissions:
   contents: read
 
@@ -19,41 +19,41 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Serve per salvare il manifest aggiornato nel repository
+    # Needed to save the updated manifest into the repository
     permissions:
       contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Genera days/manifest.json
+      - name: Generate days/manifest.json
         run: python3 .github/scripts/generate_manifest.py
 
-      # Il file viene aggiornato anche nel repository, così resta allineato
-      # con il sito pubblicato (e con il tuo clone locale dopo un git pull).
-      # I push fatti con GITHUB_TOKEN non fanno ripartire il workflow.
-      - name: Salva il manifest nel repository (solo se cambiato)
+      # The file is also updated in the repository, so it stays aligned
+      # with the published site (and with your local clone after a git pull).
+      # Pushes made with GITHUB_TOKEN do not trigger the workflow again.
+      - name: Save the manifest in the repository (only if changed)
         run: |
           if [ -z "$(git status --porcelain -- "$SITE_DIR/days/manifest.json")" ]; then
-            echo "Manifest già aggiornato, nessun commit necessario."
+            echo "Manifest already up to date, no commit needed."
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add "$SITE_DIR/days/manifest.json"
-            git commit -m "chore: aggiorna days/manifest.json [skip ci]"
-            git push || echo "::warning::Push del manifest non riuscito (branch protetto?). Il sito pubblicato è comunque aggiornato."
+            git commit -m "chore: update days/manifest.json [skip ci]"
+            git push || echo "::warning::Manifest push failed (protected branch?). The published site is still up to date."
           fi
 
-      - name: Configura GitHub Pages
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Build con Jekyll
+      - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./docs
           destination: ./_site
 
-      - name: Carica artefatto Pages
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./_site
@@ -68,6 +68,6 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - name: Deploy su GitHub Pages
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

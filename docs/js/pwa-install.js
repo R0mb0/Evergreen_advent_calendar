@@ -34,7 +34,7 @@
 
   const isDismissed = () => safeGet(DISMISS_KEY) === '1';
 
-  // 1. Registrazione Service Worker + gestione aggiornamenti
+  // 1. Service Worker registration + update handling
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
       try {
@@ -68,7 +68,7 @@
           window.location.reload();
         });
       } catch (err) {
-        console.error('Errore registrazione Service Worker:', err);
+        console.error('Service Worker registration failed:', err);
       }
     });
   }
@@ -80,7 +80,7 @@
     }
   });
 
-  // 2. Prompt nativo Android / Desktop (Chrome, Edge, Brave, Opera)
+  // 2. Native install prompt on Android / Desktop (Chrome, Edge, Brave, Opera)
   window.addEventListener('beforeinstallprompt', (event) => {
     event.preventDefault();
     deferredPrompt = event;
@@ -111,7 +111,7 @@
     if (installBanner) installBanner.hidden = true;
   });
 
-  // 3. Guida rapida dedicata per iOS Safari
+  // 3. Quick install guide for iOS Safari
   window.addEventListener('load', () => {
     if (isIosDevice() && !isStandalone() && !isDismissed() && iosBanner) {
       iosBanner.hidden = false;

@@ -3,7 +3,7 @@ window.AdventMediaViewer = (() => {
 
   const I18n = window.AdventI18n;
 
-  // Worker PDF.js (per uso 100% offline sostituisci con './libs/pdf.worker.min.js')
+  // PDF.js worker (for fully offline use, replace with './libs/pdf.worker.min.js')
   const PDF_WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
   const EXT_MAP = {
@@ -17,7 +17,7 @@ window.AdventMediaViewer = (() => {
     markdown: ['md', 'markdown']
   };
 
-  // Nomi cercati automaticamente se il giorno non è elencato in days/manifest.json
+  // File names probed automatically if the day is not listed in days/manifest.json
   const AUTO_PROBE_FILES = [
     'content.jpg', 'content.jpeg', 'content.png', 'content.webp', 'content.gif',
     'content.mp4', 'content.webm',
@@ -196,7 +196,7 @@ window.AdventMediaViewer = (() => {
     }
   };
 
-  let manifestCache = undefined; // undefined = non caricato, null = assente
+  let manifestCache = undefined; // undefined = not loaded yet, null = missing
   let activeObjectUrls = [];
   let activeMediaElements = [];
   let currentRenderId = 0;
@@ -290,7 +290,7 @@ window.AdventMediaViewer = (() => {
         el.removeAttribute('src');
         el.load();
       } catch {
-        // Ignora
+        // Ignore
       }
     }
     activeMediaElements = [];
@@ -299,14 +299,14 @@ window.AdventMediaViewer = (() => {
       try {
         URL.revokeObjectURL(url);
       } catch {
-        // Ignora
+        // Ignore
       }
     }
     activeObjectUrls = [];
   }
 
   /* =========================================================
-     SCOPERTA CONTENUTI DEL GIORNO (manifest.json + auto-probe)
+     DAY CONTENT DISCOVERY (manifest.json + auto-probe)
      ========================================================= */
 
   async function loadRootManifest() {
@@ -346,14 +346,14 @@ window.AdventMediaViewer = (() => {
     const daysMap = rootManifest?.days || rootManifest || null;
     let entry = daysMap ? (daysMap[padded] ?? daysMap[String(day)] ?? null) : null;
 
-    // Tentativo B: manifest dedicato dentro /days/XX/manifest.json
-    // (solo se il manifest globale non è disponibile: se c'è, è la fonte di verità)
+    // Attempt B: dedicated manifest inside /days/XX/manifest.json
+    // (only if the global manifest is unavailable: when present, it is the source of truth)
     if (!entry && !daysMap && window.location.protocol !== 'file:') {
       try {
         const res = await fetch(`./days/${padded}/manifest.json`, { cache: 'no-store' });
         if (res.ok) entry = await res.json();
       } catch {
-        // Ignora
+        // Ignore
       }
     }
 
@@ -381,8 +381,8 @@ window.AdventMediaViewer = (() => {
       if (entry.readme) readmeName = entry.readme;
     }
 
-    // Tentativo C: auto-rilevamento di file standard, solo se manca il manifest globale
-    // (es. sviluppo locale senza averlo generato). Con il manifest, un giorno assente è vuoto.
+    // Attempt C: auto-detection of standard file names, only if the global manifest is missing
+    // (e.g. local development without having generated it). With a manifest, a missing day is empty.
     if (!entry && !daysMap) {
       const probePromises = AUTO_PROBE_FILES.map(async (name) => {
         const url = buildDayUrl(padded, name);
@@ -419,7 +419,7 @@ window.AdventMediaViewer = (() => {
   }
 
   /* =========================================================
-     API PUBBLICA
+     PUBLIC API
      ========================================================= */
 
   async function loadDay({ day, container, tabsContainer, allowDownload, onStateChange }) {
@@ -450,7 +450,7 @@ window.AdventMediaViewer = (() => {
     session.files = assets.files;
     session.readmeUrl = assets.readmeUrl;
 
-    // Se non ci sono file multimediali ma c'è Readme.md, mostralo direttamente
+    // If there are no media files but a Readme.md exists, show it directly
     if (session.files.length === 0 && session.readmeUrl) {
       session.showingComment = true;
       renderTabs();
@@ -459,7 +459,7 @@ window.AdventMediaViewer = (() => {
       return;
     }
 
-    // Se la cartella è completamente vuota -> schermata di fallback elegante
+    // If the folder is completely empty -> friendly fallback screen
     if (session.files.length === 0) {
       renderEmptyFallback(container, `/days/${session.padded}/`);
       notifyState();
@@ -473,7 +473,7 @@ window.AdventMediaViewer = (() => {
 
   async function toggleCommentView() {
     if (!session.readmeUrl) return;
-    // Se il giorno ha SOLO il Readme.md, rimane sulla vista Readme
+    // If the day has ONLY the Readme.md, stay on the Readme view
     if (session.files.length === 0) return;
 
     session.showingComment = !session.showingComment;
@@ -547,7 +547,7 @@ window.AdventMediaViewer = (() => {
   }
 
   /* =========================================================
-     PROTEZIONE ANTI-DOWNLOAD
+     ANTI-DOWNLOAD PROTECTION
      ========================================================= */
 
   function applyProtectionAttributes(container, isProtected) {
@@ -565,7 +565,7 @@ window.AdventMediaViewer = (() => {
   }
 
   /* =========================================================
-     TABS PER GIORNI MULTI-FILE
+     TABS FOR MULTI-FILE DAYS
      ========================================================= */
 
   function renderTabs() {
@@ -608,7 +608,7 @@ window.AdventMediaViewer = (() => {
   }
 
   /* =========================================================
-     DISPATCHER RENDERING PER TIPO DI FILE
+     RENDERING DISPATCHER BY FILE TYPE
      ========================================================= */
 
   async function renderActiveFile() {
@@ -662,7 +662,7 @@ window.AdventMediaViewer = (() => {
     refreshIcons();
   }
 
-  /* ---------- 1. IMMAGINI ---------- */
+  /* ---------- 1. IMAGES ---------- */
   function renderImage(container, file, renderId) {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -713,7 +713,7 @@ window.AdventMediaViewer = (() => {
     container.appendChild(wrap);
   }
 
-  /* ---------- 3. AUDIO (CON SUPPORTO VOCALI .OPUS WHATSAPP) ---------- */
+  /* ---------- 3. AUDIO (WITH SUPPORT FOR WHATSAPP .OPUS VOICE NOTES) ---------- */
   async function renderAudio(container, file, renderId) {
     const isOpus = file.ext === 'opus';
     const label = isOpus ? tr('audioVoiceNote') : tr('audioTrack');
@@ -763,7 +763,7 @@ window.AdventMediaViewer = (() => {
     const audio = registerMediaEl(new Audio());
     audio.preload = 'metadata';
 
-    // Caricamento sorgente: per .opus forziamo MIME corretto e usiamo fallback WASM se serve (Safari/iOS)
+    // Source loading: for .opus we force the correct MIME type and use the WASM fallback if needed (Safari/iOS)
     if (isOpus) {
       const res = await fetch(file.url);
       if (!res.ok) throw new Error('Audio fetch failed');
@@ -777,7 +777,7 @@ window.AdventMediaViewer = (() => {
         );
         audio.src = blobUrl;
       } else {
-        // Fallback WASM per Safari/iOS
+        // WASM fallback for Safari/iOS
         statusEl.hidden = false;
         statusEl.textContent = tr('audioDecoding');
         const wavUrl = await decodeOpusToWavUrl(arrayBuffer);
@@ -787,7 +787,7 @@ window.AdventMediaViewer = (() => {
           audio.src = registerObjectUrl(wavUrl);
           statusEl.hidden = true;
         } else {
-          // Ultimo tentativo diretto
+          // Last direct attempt
           audio.src = file.url;
           statusEl.textContent = tr('audioError');
         }
@@ -905,7 +905,7 @@ window.AdventMediaViewer = (() => {
     return `${m}:${String(s).padStart(2, '0')}`;
   }
 
-  /* ---------- 4. PDF SU CANVAS (PDF.js) ---------- */
+  /* ---------- 4. PDF ON CANVAS (PDF.js) ---------- */
   async function renderPdf(container, file, renderId) {
     if (!window.pdfjsLib) {
       renderCustomMessage(container, 'file-warning', tr('errorTitle'), tr('pdfMissingLib'));
@@ -969,7 +969,7 @@ window.AdventMediaViewer = (() => {
     async function drawPage() {
       if (renderId !== currentRenderId) return;
       if (pageRenderTask) {
-        try { pageRenderTask.cancel(); } catch { /* ignora */ }
+        try { pageRenderTask.cancel(); } catch { /* ignore */ }
       }
 
       const page = await pdfDoc.getPage(currentPage);
@@ -1034,7 +1034,7 @@ window.AdventMediaViewer = (() => {
     container.innerHTML = `<article class="doc-sheet">${safeHtml}</article>`;
   }
 
-  /* ---------- 6. RTF (.rtf parser puro JS) ---------- */
+  /* ---------- 6. RTF (.rtf, pure JS parser) ---------- */
   async function renderRtf(container, file, renderId) {
     const res = await fetch(file.url);
     if (!res.ok) throw new Error('RTF fetch failed');
@@ -1157,7 +1157,7 @@ window.AdventMediaViewer = (() => {
           } else if (word === 'u' && param !== null) {
             const codePoint = param < 0 ? param + 65536 : param;
             pushChar(String.fromCharCode(codePoint));
-            // Salta il carattere di fallback '?' dopo \uN
+            // Skip the fallback '?' character after \uN
             if (rtf[idx] === '?') idx++;
           }
           continue;
@@ -1175,7 +1175,7 @@ window.AdventMediaViewer = (() => {
     return out.replaceAll('<p></p>', '');
   }
 
-  /* ---------- 7. TESTO SEMPLICE (.txt) ---------- */
+  /* ---------- 7. PLAIN TEXT (.txt) ---------- */
   async function renderText(container, file, renderId) {
     const res = await fetch(file.url);
     if (!res.ok) throw new Error('Text fetch failed');
@@ -1217,7 +1217,7 @@ window.AdventMediaViewer = (() => {
         </article>
       `;
 
-      // Apre i link esterni in sicurezza in una nuova scheda
+      // Open external links safely in a new tab
       container.querySelectorAll('.markdown-body a').forEach((a) => {
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
@@ -1232,7 +1232,7 @@ window.AdventMediaViewer = (() => {
   }
 
   /* =========================================================
-     SCHERMATE DI STATO & FALLBACK
+     STATUS SCREENS & FALLBACKS
      ========================================================= */
 
   function renderLoading(container, text = tr('loading')) {

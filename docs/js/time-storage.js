@@ -4,7 +4,7 @@ window.AdventTimeStorage = (() => {
   const STORAGE_KEY = 'advent_calendar_opened_records_v2';
 
   /* =========================================================
-     1. RECUPERO DATA REALE DAL SERVER + FUSO ORARIO BROWSER
+     1. REAL DATE FROM THE SERVER + BROWSER TIME ZONE
      ========================================================= */
 
   function getBrowserTimeZone() {
@@ -15,7 +15,7 @@ window.AdventTimeStorage = (() => {
     }
   }
 
-  // Converte un oggetto Date (istante UTC) in { year, month, day } nel fuso orario locale dell'utente
+  // Converts a Date object (UTC instant) into { year, month, day } in the user's local time zone
   function extractPartsInTimeZone(dateObj, timeZone) {
     try {
       const formatter = new Intl.DateTimeFormat('en-CA', {
@@ -51,7 +51,7 @@ window.AdventTimeStorage = (() => {
     }
   }
 
-  // Tentativo A: legge l'header HTTP "Date" dal server stesso (velocissimo su GitHub Pages)
+  // Attempt A: reads the HTTP "Date" header from the same server (very fast on GitHub Pages)
   async function trySameOriginServerDate() {
     if (window.location.protocol === 'file:') return null;
 
@@ -70,7 +70,7 @@ window.AdventTimeStorage = (() => {
     }
   }
 
-  // Tentativo B: API pubblica UTC di fallback
+  // Attempt B: public UTC time API as a fallback
   async function tryPublicTimeApi(apiUrl) {
     if (!apiUrl) return null;
 
@@ -79,11 +79,11 @@ window.AdventTimeStorage = (() => {
       if (!res.ok) return null;
       const data = await res.json();
 
-      // Compatibile con timeapi.io (dateTime) e worldtimeapi (utc_datetime)
+      // Compatible with timeapi.io (dateTime) and worldtimeapi (utc_datetime)
       const iso = data.dateTime || data.utc_datetime;
       if (!iso) return null;
 
-      // timeapi.io su zone=UTC può omettere la 'Z' finale
+      // timeapi.io with zone=UTC may omit the trailing 'Z'
       const normalized = iso.endsWith('Z') || /[+-]\d\d:\d\d$/.test(iso) ? iso : `${iso}Z`;
       const parsed = new Date(normalized);
       return Number.isNaN(parsed.getTime()) ? null : parsed;
@@ -95,7 +95,7 @@ window.AdventTimeStorage = (() => {
   async function resolveCurrentDate(config) {
     const timeZone = getBrowserTimeZone();
 
-    // Se demoMode è attivo in config.json, usa la data simulata
+    // If demoMode is enabled in config.json, use the simulated date
     if (config.demoMode?.enabled) {
       return {
         year: Number(config.demoMode.simulatedYear) || new Date().getFullYear(),
@@ -106,10 +106,10 @@ window.AdventTimeStorage = (() => {
       };
     }
 
-    // 1. Header HTTP Date del server hosting (GitHub Pages / server web)
+    // 1. HTTP Date header of the hosting server (GitHub Pages / web server)
     let serverUtcDate = await trySameOriginServerDate();
 
-    // 2. API pubblica esterna
+    // 2. External public API
     if (!serverUtcDate) {
       serverUtcDate = await tryPublicTimeApi(config.timeApiFallbackUrl);
     }
@@ -119,14 +119,14 @@ window.AdventTimeStorage = (() => {
       return { ...parts, timeZone, source: 'server' };
     }
 
-    // 3. Fallback offline: orologio locale del browser
+    // 3. Offline fallback: the browser's local clock
     const localNow = new Date();
     const parts = extractPartsInTimeZone(localNow, timeZone);
     return { ...parts, timeZone, source: 'local' };
   }
 
   /* =========================================================
-     2. PERSISTENZA MULTI-ANNO IN LOCALSTORAGE
+     2. MULTI-YEAR PERSISTENCE IN LOCALSTORAGE
      ========================================================= */
 
   function readAllRecords() {
@@ -144,7 +144,7 @@ window.AdventTimeStorage = (() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
     } catch {
-      // Ignora errori in modalità privata o storage pieno
+      // Ignore errors in private mode or when storage is full
     }
   }
 
@@ -156,10 +156,10 @@ window.AdventTimeStorage = (() => {
   }
 
   /**
-   * Regola multi-anno:
-   * - Se non è mai stata aperta -> può essere aperta (non è ancora aperta).
-   * - Se annoAttuale > ultimoAnnoApertura -> è un nuovo anno, quindi torna DA APRIRE.
-   * - Se annoAttuale <= ultimoAnnoApertura -> risulta GIÀ APERTA (evita problemi se l'orologio torna indietro).
+   * Multi-year rule:
+   * - If it has never been opened -> it can be opened (it is not open yet).
+   * - If currentYear > lastOpenedYear -> it is a new year, so it is TO OPEN again.
+   * - If currentYear <= lastOpenedYear -> it counts as ALREADY OPEN (avoids problems if the clock goes back).
    */
   function isOpenedForYear(day, currentYear) {
     const rec = getDayRecord(day);
@@ -177,7 +177,7 @@ window.AdventTimeStorage = (() => {
     const records = readAllRecords();
     const existing = records[String(day)];
 
-    // Aggiorna solo se è la prima apertura o se siamo in un anno strettamente superiore
+    // Update only on the first opening or in a strictly later year
     if (!existing || currentYear > existing.year) {
       records[String(day)] = {
         year: currentYear,
@@ -203,7 +203,7 @@ window.AdventTimeStorage = (() => {
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch {
-      // Ignora
+      // Ignore
     }
   }
 

@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-"""Genera docs/days/manifest.json scansionando le cartelle docs/days/NN/.
+"""Generates docs/days/manifest.json by scanning the docs/days/NN/ folders.
 
-Uso (dalla radice del repository, anche in locale):
+Usage (from the repository root, also locally):
     python3 .github/scripts/generate_manifest.py
 
-Regole:
-  - vengono considerate solo le cartelle con nome a due cifre (01, 02, ... 24);
-  - Readme.md (qualsiasi maiuscola) è la "nota del giorno" e va nel campo "readme";
-  - file nascosti (.nome), file di sistema e file che iniziano con "_" sono ignorati
-    (Jekyll non pubblica i file che iniziano con "_" o "."): in quel caso viene
-    stampato un avviso;
-  - i giorni senza file né Readme non compaiono nel manifest.
+Rules:
+  - only folders with a two-digit name (01, 02, ... 24) are considered;
+  - Readme.md (any capitalization) is the "note of the day" and goes into the "readme" field;
+  - hidden files (.name), system files and files starting with "_" are ignored
+    (Jekyll does not publish files starting with "_" or "."): a warning is
+    printed in that case;
+  - days with neither files nor a Readme do not appear in the manifest.
 
-Il percorso della cartella del sito può essere cambiato con la variabile
-d'ambiente SITE_DIR (default: docs).
+The site folder path can be changed with the SITE_DIR environment
+variable (default: docs).
 """
 import json
 import os
@@ -46,7 +46,7 @@ def build_manifest(days_dir: Path) -> dict:
             if name.startswith(".") or lower_name in IGNORED_FILES:
                 continue
             if name.startswith("_"):
-                print(f"AVVISO: {folder.name}/{name} ignorato (Jekyll non pubblica i file che iniziano con '_')",
+                print(f"WARNING: {folder.name}/{name} ignored (Jekyll does not publish files starting with '_')",
                       file=sys.stderr)
                 continue
 
@@ -78,7 +78,7 @@ def main() -> int:
         json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
-    print(f"Generato {out_file} con {len(manifest['days'])} giorni.")
+    print(f"Generated {out_file} with {len(manifest['days'])} days.")
     return 0
 
 
