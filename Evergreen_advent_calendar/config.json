@@ -24,6 +24,7 @@
   "allowDownload": false,
   "enableSnow": true,
   "enableConfetti": true,
+  "offlineContent": "unlocked",
   "randomOrder": true,
   "randomOrderSeed": "evergreen",
   "defaultLanguage": "auto",

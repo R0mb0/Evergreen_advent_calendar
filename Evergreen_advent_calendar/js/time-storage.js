@@ -106,6 +106,12 @@ window.AdventTimeStorage = (() => {
       };
     }
 
+    // Offline: skip the network attempts (they would only add a delay) and use the local clock
+    if (navigator.onLine === false) {
+      const localOffline = extractPartsInTimeZone(new Date(), timeZone);
+      return { ...localOffline, timeZone, source: 'local' };
+    }
+
     // 1. HTTP Date header of the hosting server (GitHub Pages / web server)
     let serverUtcDate = await trySameOriginServerDate();
 

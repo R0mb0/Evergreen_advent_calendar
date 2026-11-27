@@ -6,6 +6,14 @@ baseurl: ""
 # so do not use such names inside days/.
 include:
   - days
+  - libs
 
+# Repository files that must not end up in the published site
+# (keep this list when the site is moved to the repository root).
 exclude:
   - README.md
+  - Readme_imgs
+  - tools
+  - LICENSE
+  - Gemfile
+  - Gemfile.lock

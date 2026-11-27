@@ -7,41 +7,17 @@
   <title>Evergreen Advent Calendar</title>
 
   <!-- =========================================================
-       EXTERNAL LIBRARIES (the service worker caches them for offline use)
+       FONTS & LIBRARIES
+       Everything is served from ./libs/ so the app works fully offline.
+       Run tools/download_libs.py once to fill that folder (the GitHub workflow
+       also does it automatically). If a file is missing, a public CDN is used
+       as a fallback: libraries are handled by js/libs.js, fonts below.
        ========================================================= -->
-
-  <!-- 1. Modern rounded fonts: Fredoka (titles/numbers) + Nunito (text) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap"
     rel="stylesheet"
+    href="libs/fonts/fonts.css"
+    onerror="this.onerror=null;this.href='https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&amp;family=Nunito:wght@500;600;700;800&amp;display=swap'"
   />
-
-  <!-- 2. Rounded vector icons (Lucide Icons) -->
-  <!-- Offline: ./libs/lucide.min.js -->
-  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
-
-  <!-- 3. Confetti on opening (Canvas Confetti) -->
-  <!-- Offline: ./libs/confetti.browser.min.js -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
-
-  <!-- 4. Markdown reader + HTML sanitizing (Marked + DOMPurify) -->
-  <!-- Offline: ./libs/marked.min.js and ./libs/purify.min.js -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js" defer></script>
-
-  <!-- 5. Word .docx reader (Mammoth.js) -->
-  <!-- Offline: ./libs/mammoth.browser.min.js -->
-  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js" defer></script>
-
-  <!-- 6. Canvas PDF reader without a download toolbar (PDF.js UMD) -->
-  <!-- Offline: ./libs/pdf.min.js (and ./libs/pdf.worker.min.js, configured in media-viewer.js) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
-
-  <!-- 7. WASM decoder fallback for .opus voice notes on browsers that cannot play them natively (e.g. Safari/iOS) -->
-  <!-- Offline: ./libs/ogg-opus-decoder.min.js -->
-  <script src="https://cdn.jsdelivr.net/npm/ogg-opus-decoder@1.7.0/dist/ogg-opus-decoder.min.js" defer></script>
 
   <!-- Application styles -->
   <link rel="stylesheet" href="css/style.css" />
@@ -224,6 +200,7 @@
   </aside>
 
   <!-- Application modules -->
+  <script src="js/libs.js" defer></script>
   <script src="js/i18n.js" defer></script>
   <script src="js/time-storage.js" defer></script>
   <script src="js/media-viewer.js" defer></script>
