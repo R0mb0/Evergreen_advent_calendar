@@ -1,0 +1,145 @@
+{
+  "days": {
+    "01": {
+      "files": [
+        "pensiero.txt"
+      ],
+      "readme": "Readme.md"
+    },
+    "02": {
+      "files": [
+        "foto.jpg",
+        "vocale_whatsapp.opus"
+      ],
+      "readme": "Readme.md"
+    },
+    "03": {
+      "files": [
+        "ricetta.pdf"
+      ]
+    },
+    "04": {
+      "files": [
+        "Lettera di Natale.docx"
+      ]
+    },
+    "05": {
+      "files": [
+        "biglietto.rtf"
+      ]
+    },
+    "06": {
+      "files": [
+        "video.mp4"
+      ],
+      "readme": "Readme.md"
+    },
+    "07": {
+      "files": [
+        "animazione.webm"
+      ]
+    },
+    "08": {
+      "files": [
+        "1_neve.png",
+        "2_bosco.webp",
+        "3_sera.jpg"
+      ]
+    },
+    "09": {
+      "files": [],
+      "readme": "Readme.md"
+    },
+    "10": {
+      "files": [
+        "melodia.m4a"
+      ]
+    },
+    "11": {
+      "files": [
+        "poesia.txt"
+      ],
+      "readme": "Readme.md"
+    },
+    "12": {
+      "files": [
+        "albero.svg",
+        "girandola.gif"
+      ]
+    },
+    "13": {
+      "files": [
+        "cartolina.png",
+        "vocale.opus"
+      ]
+    },
+    "14": {
+      "files": [
+        "buono.pdf"
+      ]
+    },
+    "15": {
+      "files": [
+        "foto.jpg",
+        "programma.docx"
+      ]
+    },
+    "16": {
+      "files": [
+        "video.mp4"
+      ]
+    },
+    "17": {
+      "files": [
+        "canzone.mp3"
+      ],
+      "readme": "Readme.md"
+    },
+    "18": {
+      "files": [
+        "pensiero.rtf"
+      ],
+      "readme": "Readme.md"
+    },
+    "19": {
+      "files": [
+        "inverno.webp",
+        "storia.txt"
+      ]
+    },
+    "20": {
+      "files": [
+        "saluto.webm"
+      ],
+      "readme": "Readme.md"
+    },
+    "21": {
+      "files": [
+        "lista_regali.pdf",
+        "ringraziamenti.docx"
+      ]
+    },
+    "22": {
+      "files": [
+        "a_mattino.jpg",
+        "b_notte.jpg"
+      ],
+      "readme": "Readme.md"
+    },
+    "23": {
+      "files": [
+        "campanelle.wav",
+        "vigilia.png"
+      ]
+    },
+    "24": {
+      "files": [
+        "1_auguri.jpg",
+        "2_video_finale.mp4",
+        "3_messaggio.opus",
+        "4_cartolina.pdf"
+      ],
+      "readme": "Readme.md"
+    }
+  }
+}

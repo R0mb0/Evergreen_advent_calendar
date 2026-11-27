@@ -1,0 +1,11 @@
+title: Evergreen Advent Calendar
+baseurl: ""
+
+# Jekyll only publishes the folder as-is: the app is plain HTML/CSS/JS.
+# Folders and files starting with "_" or "." are ignored by Jekyll,
+# so do not use such names inside days/.
+include:
+  - days
+
+exclude:
+  - README.md
