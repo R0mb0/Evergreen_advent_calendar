@@ -45,6 +45,15 @@
 
   <!-- Stili dell'applicazione -->
   <link rel="stylesheet" href="css/style.css" />
+
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NomeApp" />
+
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
 </head>
 <body>
   <!-- Sfondo neve animata -->
@@ -195,5 +204,39 @@
   <script src="js/time-storage.js" defer></script>
   <script src="js/media-viewer.js" defer></script>
   <script src="js/app.js" defer></script>
+  <!-- Banner installazione Android / Desktop -->
+<aside id="pwa-install-banner" class="pwa-banner" hidden role="region" aria-label="Installa applicazione">
+  <div class="pwa-banner__text">
+    <strong>Installa l'app</strong>
+    <span>Accesso rapido e funzionamento 100% offline.</span>
+  </div>
+  <div class="pwa-banner__actions">
+    <button id="pwa-install-btn" type="button" class="pwa-btn pwa-btn--primary">Installa</button>
+    <button id="pwa-dismiss-btn" type="button" class="pwa-btn pwa-btn--ghost" aria-label="Chiudi">✕</button>
+  </div>
+</aside>
+
+<!-- Banner guida rapida iOS (Safari) -->
+<aside id="ios-install-banner" class="pwa-banner pwa-banner--ios" hidden role="region" aria-label="Installa su iOS">
+  <div class="pwa-banner__text">
+    <strong>Installa su iPhone / iPad</strong>
+    <span>
+      Tocca <strong>Condividi</strong> (icona quadrato con freccia in alto) →
+      <strong>Aggiungi alla schermata Home</strong>.
+    </span>
+  </div>
+  <button id="ios-dismiss-btn" type="button" class="pwa-btn pwa-btn--ghost" aria-label="Chiudi">✕</button>
+</aside>
+
+<!-- Banner nuova versione disponibile -->
+<aside id="pwa-update-banner" class="pwa-banner pwa-banner--update" hidden role="status">
+  <div class="pwa-banner__text">
+    <strong>Aggiornamento pronto</strong>
+    <span>È disponibile una nuova versione dell'app.</span>
+  </div>
+  <button id="pwa-update-btn" type="button" class="pwa-btn pwa-btn--primary">Aggiorna</button>
+</aside>
+
+<script src="./pwa-install.js" defer></script>
 </body>
 </html>

@@ -1387,3 +1387,67 @@ body {
   max-width: 100%;
   border-radius: 14px;
 }
+
+.pwa-banner {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 9999;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  background: #0f172a;
+  color: #f8fafc;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.pwa-banner[hidden] {
+  display: none;
+}
+
+.pwa-banner__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.pwa-banner__text span {
+  color: #cbd5e1;
+  font-size: 0.82rem;
+}
+
+.pwa-banner__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.pwa-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 0.85rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.pwa-btn--primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.pwa-btn--ghost {
+  background: transparent;
+  color: #94a3b8;
+  padding: 0.4rem 0.6rem;
+}
