@@ -1,0 +1,7 @@
+title: Evergreen Advent Calendar
+baseurl: ""
+include:
+  - manifest.webmanifest
+  - days
+exclude:
+  - README.md
